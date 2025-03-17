@@ -1,7 +1,7 @@
-# Ethrex Rollup Wallet Bridge
+# Ethrex L2 Hub
 
 ## Overview  
-This is a frontend application built with React that connects a Web3 wallet to a blockchain running **Ethrex L2**. The app allows users to:  
+This is a frontend application built with React that connects a Web3 wallet to a L2 blockchain running **Ethrex L2**. The app allows users to:  
 - Connect their Web3 wallet  
 - Use the bridge to transfer and withdraw funds  
 - Interact with the Ethrex Rollup chain  
