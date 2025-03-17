@@ -1,54 +1,40 @@
-# React + TypeScript + Vite
+# Ethrex Rollup Wallet Bridge
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Overview  
+This is a frontend application built with React that connects a Web3 wallet to a blockchain running **Ethrex L2**. The app allows users to:  
+- Connect their Web3 wallet  
+- Use the bridge to transfer and withdraw funds  
+- Interact with the Ethrex Rollup chain  
 
-Currently, two official plugins are available:
+## Features  
+✅ Web3 wallet connection  
+✅ Bridge for transferring and withdrawing funds  
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Installation  
 
-## Expanding the ESLint configuration
+### Prerequisites  
+- **Node.js** (v21+ recommended)  
+- **npm**  
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+### Setup  
+```bash
+# Install dependencies
+npm install  # or npm install
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+# Start the development server
+npm run dev  # or npm run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Usage  
+1. Open the app in your browser.  
+2. Connect your Web3 wallet (MetaMask, WalletConnect, etc.).  
+3. Use the bridge to transfer or withdraw funds on **Ethrex Rollup**.  
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## Configuration  
+If needed, update the RPC URLs and contract addresses in the environment variables or configuration files.  
 
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
-```
+## Contributing  
+Feel free to submit pull requests or open issues for bug fixes and feature suggestions.  
+
+## License  
+MIT  
