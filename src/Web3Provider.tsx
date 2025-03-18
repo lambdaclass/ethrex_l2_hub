@@ -5,10 +5,10 @@ import { type Chain } from 'viem'
 
 export const ethrexRollupLocal = {
     id: 1729,
-    name: 'EthRex Rollup Local',
+    name: 'Ethrex Rollup Local',
     nativeCurrency: { name: 'Ether', symbol: 'ETH', decimals: 18 },
     rpcUrls: {
-        default: { http: ['http://localhost:8552'] },
+        default: { http: ['http://localhost:1729'] },
     }
 
 } as const satisfies Chain
