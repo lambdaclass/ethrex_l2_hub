@@ -1,12 +1,13 @@
 import { useState } from "react";
 import { parseEther } from "viem";
-import { useAccount, useSendTransaction } from "wagmi";
+import { useAccount, useSendTransaction, useWaitForTransactionReceipt } from "wagmi";
 
 const bridgeAddress = "0x39053c40f68e58b089408c398dd8441a71a644c7"
 
 export const Deposit: React.FC = () => {
   const [amount, setAmount] = useState<string>("");
-  const { data, isPending, isSuccess, sendTransaction } = useSendTransaction()
+  const { data, isPending, isSuccess: isTxSuccess, sendTransaction } = useSendTransaction()
+  const { data: txReceiptData, isLoading, isSuccess: isTxReciptSuccess, isFetched, isError, isPaused } = useWaitForTransactionReceipt({ hash: data })
 
   // Simulate bridging transaction (replace with actual Web3 logic)
   const handleDeposit = () => {
@@ -18,7 +19,7 @@ export const Deposit: React.FC = () => {
 
   return (
     <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
-      <h2 className="text-xl font-semibold mb-4 text-center">Deposit founds</h2>
+      <h2 className="text-xl font-semibold mb-4 text-center">Deposit Funds</h2>
       <div className="space-y-4">
         <input
           type="text"
@@ -34,14 +35,22 @@ export const Deposit: React.FC = () => {
         >
           {isPending ? "Waiting for wallet confirmation..." : "Deposit"}
         </button>
-        {isSuccess &&
+        {isTxSuccess &&
           <div className="p-4 bg-green-50 border border-green-200 rounded-md">
-            <h3 className="text-lg font-semibold text-green-800">Transaction Successful!</h3>
+            <h3 className="text-lg font-semibold text-green-800">The Deposit Process has started!</h3>
             <p className="text-sm text-green-700 mt-2">
               Transaction Hash:{" "}
               <span className="font-mono break-all">{data}</span>
             </p>
+            {isLoading &&
+              <p className="text-sm text-gray-700 mt-2">Waiting for confirmation...</p>}
+            {isTxReciptSuccess &&
+              <>
+                <p className="text-sm text-green-700 mt-2">The deposit has been confirmed!</p>
+                <p className="text-sm text-green-700 mt-2">{txReceiptData.blockHash}</p>
+              </>}
           </div>}
+
 
         {/* Confirmation Box 
             {transactionReceipt && (

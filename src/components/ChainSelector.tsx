@@ -1,14 +1,14 @@
 import { useAccount, useChainId, useSwitchChain } from 'wagmi'
 
 export const ChainSelector: React.FC = () => {
-  const { address, chainId } = useAccount()
+  const { isDisconnected, chainId } = useAccount()
   const { chains, switchChain } = useSwitchChain()
 
   const setSelectedChain = (chainId: string) => {
     switchChain({ chainId: Number(chainId) })
   }
 
-  if (!address) return <></>
+  if (isDisconnected) return <></>
 
   return (
     <select
