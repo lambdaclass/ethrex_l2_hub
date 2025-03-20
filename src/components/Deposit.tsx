@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { parseEther } from "viem";
 import { useAccount, useSendTransaction, useWaitForTransactionReceipt } from "wagmi";
 
@@ -16,6 +16,11 @@ export const Deposit: React.FC = () => {
       value: parseEther(amount),
     })
   };
+
+  useEffect(() => {
+    if (isTxReciptSuccess)
+      setAmount("")
+  }, [isTxReciptSuccess])
 
   return (
     <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
@@ -36,19 +41,16 @@ export const Deposit: React.FC = () => {
           {isPending ? "Waiting for wallet confirmation..." : "Deposit"}
         </button>
         {isTxSuccess &&
-          <div className="p-4 bg-green-50 border border-green-200 rounded-md">
-            <h3 className="text-lg font-semibold text-green-800">The Deposit Process has started!</h3>
-            <p className="text-sm text-green-700 mt-2">
+          <div className={`p-4 ${isTxReciptSuccess ? "bg-green-300" : "bg-violet-200"} rounded-md`}>
+            <h3 className="text-lg font-semibold text-gray-800">The Deposit Process has {isTxReciptSuccess ? "Finished" : "started"}</h3>
+            <p className="text-sm text-gray-700 mt-2">
               Transaction Hash:{" "}
               <span className="font-mono break-all">{data}</span>
             </p>
             {isLoading &&
-              <p className="text-sm text-gray-700 mt-2">Waiting for confirmation...</p>}
+              <p className="text-sm text-gray-500 mt-2">Waiting for confirmation...</p>}
             {isTxReciptSuccess &&
-              <>
-                <p className="text-sm text-green-700 mt-2">The deposit has been confirmed!</p>
-                <p className="text-sm text-green-700 mt-2">{txReceiptData.blockHash}</p>
-              </>}
+              <p className="text-sm text-gray-700 mt-2">The deposit has been confirmed!</p>}
           </div>}
 
 
