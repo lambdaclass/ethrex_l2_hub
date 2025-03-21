@@ -1,38 +1,17 @@
 import { WagmiProvider, createConfig, http } from "wagmi";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ConnectKitProvider, getDefaultConfig } from "connectkit";
-import { type Chain } from 'viem'
-
-
-export const ethrexL1Local = {
-    id: 9,
-    name: 'Ethrex L1 Local',
-    nativeCurrency: { name: 'Ether', symbol: 'ETH', decimals: 18 },
-    rpcUrls: {
-        default: { http: ['http://localhost:8545'] },
-    }
-
-} as const satisfies Chain
-
-export const ethrexL2Local = {
-    id: 1729,
-    name: 'Ethrex L2 Local',
-    nativeCurrency: { name: 'Ether', symbol: 'ETH', decimals: 18 },
-    rpcUrls: {
-        default: { http: ['http://localhost:1729'] },
-    }
-
-} as const satisfies Chain
+import { L1, L2 } from "./layers";
 
 
 const config = createConfig(
     getDefaultConfig({
         // Your dApps chains
-        chains: [ethrexL1Local, ethrexL2Local],
+        chains: [L1, L2],
         transports: {
             // RPC URL for each chain
-            [ethrexL1Local.id]: http(),
-            [ethrexL2Local.id]: http(),
+            [L1.id]: http(),
+            [L2.id]: http(),
         },
 
         // Required API Keys

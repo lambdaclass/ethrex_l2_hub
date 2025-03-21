@@ -7,7 +7,7 @@ const bridgeAddress = "0x39053c40f68e58b089408c398dd8441a71a644c7"
 export const Deposit: React.FC = () => {
   const [amount, setAmount] = useState<string>("");
   const { data, isPending, isSuccess: isTxSuccess, sendTransaction } = useSendTransaction()
-  const { data: txReceiptData, isLoading, isSuccess: isTxReciptSuccess, isFetched, isError, isPaused } = useWaitForTransactionReceipt({ hash: data })
+  const { isLoading, isSuccess: isTxReciptSuccess } = useWaitForTransactionReceipt({ hash: data })
 
   // Simulate bridging transaction (replace with actual Web3 logic)
   const handleDeposit = () => {
