@@ -18,11 +18,14 @@ This is a frontend application built with React that connects a Web3 wallet to a
 
 ### Setup  
 ```bash
-# Install dependencies
-npm install  # or npm install
+# Create enviroment file
+cp .env.example .env
+
+# Install deps
+npm install  
 
 # Start the development server
-npm run dev  # or npm run dev
+npm run dev  
 ```
 
 ## Usage  
