@@ -1,4 +1,4 @@
-import { useAccount, useChainId, useSwitchChain } from 'wagmi'
+import { useAccount, useSwitchChain } from 'wagmi'
 
 export const ChainSelector: React.FC = () => {
   const { isDisconnected, chainId } = useAccount()

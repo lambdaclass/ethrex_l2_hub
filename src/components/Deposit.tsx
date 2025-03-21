@@ -1,21 +1,12 @@
 import { useState, useEffect } from "react";
 import { parseEther } from "viem";
-import { useAccount, useSendTransaction, useWaitForTransactionReceipt } from "wagmi";
-
-const bridgeAddress = "0x39053c40f68e58b089408c398dd8441a71a644c7"
+import { useWaitForTransactionReceipt } from "wagmi";
+import { useDeposit } from "../hooks/deposit";
 
 export const Deposit: React.FC = () => {
   const [amount, setAmount] = useState<string>("");
-  const { data, isPending, isSuccess: isTxSuccess, sendTransaction } = useSendTransaction()
+  const { data, isPending, isSuccess: isTxSuccess, deposit } = useDeposit({ amount: parseEther(amount) })
   const { isLoading, isSuccess: isTxReciptSuccess } = useWaitForTransactionReceipt({ hash: data })
-
-  // Simulate bridging transaction (replace with actual Web3 logic)
-  const handleDeposit = () => {
-    sendTransaction({
-      to: bridgeAddress,
-      value: parseEther(amount),
-    })
-  };
 
   useEffect(() => {
     if (isTxReciptSuccess)
@@ -34,7 +25,7 @@ export const Deposit: React.FC = () => {
           className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
         <button
-          onClick={handleDeposit}
+          onClick={deposit}
           disabled={isPending}
           className="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 transition duration-200 disabled:bg-blue-300"
         >

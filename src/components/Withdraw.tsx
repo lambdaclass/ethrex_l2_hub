@@ -1,20 +1,21 @@
 import { useState } from "react";
 import { parseEther } from "viem";
-import { useAccount, useSendTransaction } from "wagmi";
-
-const bridgeAddress = "0x39053c40f68e58b089408c398dd8441a71a644c7"
+import { useAccount } from 'wagmi'
+import { useWithdraw, useWatchWithdrawalInitiated } from "../hooks/withdraw";
 
 export const Withdraw: React.FC = () => {
+  const { address } = useAccount()
   const [amount, setAmount] = useState<string>("");
-  const { data, isPending, isSuccess, sendTransaction } = useSendTransaction()
+  const { data, isPending, isSuccess, withdraw } = useWithdraw({ amount: parseEther(amount) })
+
+  useWatchWithdrawalInitiated({
+    onLogs: (logs) => {
+      console.log(logs)
+    },
+    args: { senderOnL2: address, receiverOnL1: address }
+  })
 
   // Simulate bridging transaction (replace with actual Web3 logic)
-  const handleDeposit = () => {
-    sendTransaction({
-      to: bridgeAddress,
-      value: parseEther(amount),
-    })
-  };
 
   return (
     <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
@@ -28,7 +29,7 @@ export const Withdraw: React.FC = () => {
           className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
         <button
-          onClick={handleDeposit}
+          onClick={withdraw}
           disabled={isPending}
           className="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 transition duration-200 disabled:bg-blue-300"
         >
