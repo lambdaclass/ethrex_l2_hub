@@ -15,8 +15,6 @@ export const Withdraw: React.FC = () => {
     args: { senderOnL2: address, receiverOnL1: address }
   })
 
-  // Simulate bridging transaction (replace with actual Web3 logic)
-
   return (
     <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
       <h2 className="text-xl font-semibold mb-4 text-center">Withdraw Funds</h2>
