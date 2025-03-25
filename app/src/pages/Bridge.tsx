@@ -2,7 +2,6 @@ import { useAccount } from "wagmi"
 import { Deposit } from "../components/Deposit"
 import { Withdraw } from "../components/Withdraw"
 
-
 export const Bridge: React.FC = () => {
   const { chainId, isConnected, isDisconnected } = useAccount()
 
@@ -18,7 +17,7 @@ export const Bridge: React.FC = () => {
     )
 
   return (
-    <p className="text-xl text-gray-600">You must connected to a valid network</p>
+    <p className="text-xl text-gray-600">You must be connected to a valid network</p>
   )
 
 }

@@ -1,5 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { Bridge } from "./pages/bridge";
+import { Bridge } from "./pages/Bridge";
 import { Header } from "./components/Header";
 import { AccountAbstraction } from "./pages/AccountAbstraction";
 
