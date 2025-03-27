@@ -34,8 +34,9 @@ export RICH_ACCOUNT_PK=0xbcdf20249abf0ed6d944c0288fad489e33f66b3960d9e6229c1cd21
 To deploy the contracts, you can follow this steps:
 
 - In another terminal, start an Ethrex L2 blockchain. You can do this by running `make restart` in the `crates/l2` directory of the Ethrex repo.
-- Deploy the delegation contract with `forge create --private-key $RICH_ACCOUNT_PK Delegation`. The deployed address should be `0xb4B46bdAA835F8E4b4d8e208B6559cD267851051`.
-- Deploy the test token with `forge create --private-key $RICH_ACCOUNT_PK TestToken --constructor-args $ALICE_ADDRESS`. The deployed address should be `0x17435ccE3d1B4fA2e5f8A08eD921D57C6762A180`. This will also mint tokens for `ALICE_ADDRESS`
+- Be sure to have the `ETH_RPC_URL` env var set to the L2 RPC URL, e.g.: `export ETH_RPC_URL=http://localhost:1729`.
+- Deploy the delegation contract with `forge create --private-key $RICH_ACCOUNT_PK --broadcast Delegation`. The deployed address should be `0xb4B46bdAA835F8E4b4d8e208B6559cD267851051`.
+- Deploy the test token with `forge create --private-key $RICH_ACCOUNT_PK --broadcast TestToken --constructor-args $ALICE_ADDRESS`. The deployed address should be `0x17435ccE3d1B4fA2e5f8A08eD921D57C6762A180`. This will also mint tokens for `ALICE_ADDRESS`
 
 ### Delegate an EOA
 
@@ -47,14 +48,14 @@ We will delegate the previous account to the `Delegation` contract. In the same 
 ```bash
 # First fund ALICE. Alice needs to send the transaction where she will delegate her account
 cast send --private-key $RICH_ACCOUNT_PK --value 1000000000000000000 $ALICE_ADDRESS
-# Sign the delegation
-SIGNED_AUTH=$(cast wallet sign-auth 0xb4B46bdAA835F8E4b4d8e208B6559cD267851051 --private-key $ALICE_PK)
+# Sign the delegation. As we will send the transaction from ALICE, her nonce will be increased BEFORE processing the transaction and the authorization
+SIGNED_AUTH=$(cast wallet sign-auth 0xb4B46bdAA835F8E4b4d8e208B6559cD267851051 --private-key $ALICE_PK --nonce 1)
 # Delegate and authorize a P256 public key
-cast send --private-key $ALICE_PK --auth $SIGNED_AUTH $ALICE_ADDRESS 'authorize((uint256,uint256))' (<P256_PUBLIC_X>, <P256_PUBLIC_Y>)
+cast send --private-key $ALICE_PK --auth $SIGNED_AUTH $ALICE_ADDRESS 'authorize((uint256,uint256))' '(<P256_PUBLIC_X>, <P256_PUBLIC_Y>)'
 ```
 
 Then, you can test the delegation sending a transaction signed with the P256 private key. This transaction will send some `TestToken`s to `BOB_ADDRESS`:
 
 ```bash
-cast send --private-key $RICH_ACCOUNT_PK $ALICE_ADDRESS 'execute(address,uint256,bytes,(uint256,uint256),(bytes,string,uint16,uint16,bool))' 0x17435ccE3d1B4fA2e5f8A08eD921D57C6762A180 0 $(cast calldata 'transfer(address,uint256)' $BOB_ADDRESS 100000000000000000) (<P256_SIG_X>, <P256_SIG_Y>) (WebAuthnP256.Metadata)
+cast send --private-key $RICH_ACCOUNT_PK $ALICE_ADDRESS 'execute(address,uint256,bytes,(uint256,uint256),(bytes,string,uint16,uint16,bool))' 0x17435ccE3d1B4fA2e5f8A08eD921D57C6762A180 0 $(cast calldata 'transfer(address,uint256)' $BOB_ADDRESS 100000000000000000) '(<P256_SIG_X>, <P256_SIG_Y>)' '(WebAuthnP256.Metadata)'
 ```
