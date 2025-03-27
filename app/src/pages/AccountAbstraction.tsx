@@ -1,11 +1,28 @@
 import { useEffect } from "react"
+import { hexToBytes } from "viem"
 import { useSwitchChain } from "wagmi"
+import {
+    type PublicKey,
+    createCredential,
+    parsePublicKey,
+    sign,
+} from 'webauthn-p256'
 
 export const AccountAbstraction: React.FC = () => {
     const { switchChain } = useSwitchChain()
     useEffect(() => {
         switchChain({ chainId: Number(import.meta.env.VITE_L2_CHAIN_ID) })
     }, [])
+
+    const handleSignup = () => {
+        const publicKey = createCredential({
+            user: {
+                name: 'Ethrex Passkey',
+                id: hexToBytes('0x01')
+            }
+        })
+
+    }
 
     return (
         <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-3xl">
@@ -20,7 +37,9 @@ export const AccountAbstraction: React.FC = () => {
 
                 <hr className="border-gray-300" />
                 <div className="flex gap-4 mt-4 max-w-xs">
-                    <button className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-md flex-1 transition-colors">
+                    <button
+                        onClick={handleSignup}
+                        className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-md flex-1 transition-colors">
                         Sign Up
                     </button>
                     <button className="bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-2 px-4 rounded-md flex-1 transition-colors">

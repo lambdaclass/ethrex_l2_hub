@@ -27,7 +27,11 @@ const config = createConfig(
     }),
 );
 
-const queryClient = new QueryClient();
+export const queryClient = new QueryClient();
+
+export const client = config.getClient()
+
+export type Client = typeof client
 
 export const Web3Provider: React.FC<React.PropsWithChildren> = ({ children }) => {
     return (
