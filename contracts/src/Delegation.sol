@@ -13,8 +13,19 @@ contract Delegation {
 
     /// Authorize a public key to execute transactions on behalf of the delegatee
     /// @param authorized The public key to authorize
-    function authorize(ECDSA.PublicKey calldata authorized) public {
-        if (msg.sender != address(this)) {
+    /// @param signature The Ethereum signature to verify the authorization
+    function authorize(ECDSA.PublicKey calldata authorized, ECDSA.RecoveredSignature calldata signature) public {
+        bytes32 digest = keccak256(abi.encodePacked(nonce, authorized.x, authorized.y));
+        nonce++;
+
+        address signer = ecrecover(
+            digest,
+            signature.yParity == 0 ? 27 : 28,
+            bytes32(signature.r),
+            bytes32(signature.s)
+        );
+
+        if (signer != address(this)) {
             revert("Unauthorized");
         }
 
