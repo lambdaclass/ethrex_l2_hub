@@ -39,5 +39,12 @@ If needed, update the RPC URLs and contract addresses in the environment variabl
 ## Contributing  
 Feel free to submit pull requests or open issues for bug fixes and feature suggestions.  
 
+## References and acknowledgements
+The following links, repos, companies and projects have been important in the development of this repo, we have learned a lot from them and want to thank and acknowledge them.
+
+[Ithaca  Account Delegation with EIP-7702](https://github.com/ithacaxyz/exp-0001)
+[EIP-7212: Precompiled for secp256r1 Curve Support](https://ethereum-magicians.org/t/eip-7212-precompiled-for-secp256r1-curve-support/14789)
+[dopewars] (https://dopewars.game/)
+
 ## License  
 MIT  
