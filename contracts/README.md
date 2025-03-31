@@ -46,12 +46,41 @@ To deploy the contracts, you can follow this steps:
 We will delegate the previous account to the `Delegation` contract. In the same transaction, we can authorize a P256 public key.
 
 ```bash
-# First fund ALICE. Alice needs to send the transaction where she will delegate her account
-cast send --private-key $RICH_ACCOUNT_PK --value 1000000000000000000 $ALICE_ADDRESS
-# Sign the delegation. As we will send the transaction from ALICE, her nonce will be increased BEFORE processing the transaction and the authorization
-SIGNED_AUTH=$(cast wallet sign-auth 0xb4B46bdAA835F8E4b4d8e208B6559cD267851051 --private-key $ALICE_PK --nonce 1)
-# Delegate and authorize a P256 public key
-cast send --private-key $ALICE_PK --auth $SIGNED_AUTH $ALICE_ADDRESS 'authorize((uint256,uint256))' '(<P256_PUBLIC_X>, <P256_PUBLIC_Y>)'
+# P256 public key
+export P256_SIG_X=1
+export P256_SIG_Y=2
+
+# Sign the delegation
+export AUTH_DIGEST_HASH=$(cast keccak 0x05$(cast to-rlp '[1729, "0xb4B46bdAA835F8E4b4d8e208B6559cD267851051", 0]' | cut -dx -f2))
+export AUTH_SIGNATURE=$(cast wallet sign --private-key $ALICE_PK --no-hash $AUTH_DIGEST_HASH)
+
+# Sign the authorize request
+export CALLDATA_DIGEST_HASH=$(cast keccak $(cast abi-encode --packed '_(uint256,uint256,uint256)' 0 $P256_SIG_X $P256_SIG_Y))
+export CALLDATA_SIGNATURE=$(cast wallet sign --private-key $ALICE_PK --no-hash $CALLDATA_DIGEST_HASH)
+
+# Delegate and authorize the P256 public key
+curl $ETH_RPC_URL -H 'content-type: application/json' \
+    --data '{
+    "jsonrpc": "2.0",
+    "id": "1",
+    "method": "ethrex_sendTransaction",
+    "params": [{
+        "to": "'$ALICE_ADDRESS'",
+        "data": "'$(\
+            cast calldata "authorize((uint256,uint256),(uint256,uint256,uint8))" \
+            "($P256_SIG_X,$P256_SIG_Y)" \
+            "(0x${CALLDATA_SIGNATURE:2:64},0x${CALLDATA_SIGNATURE:66:64},0x$((0x${AUTH_SIGNATURE:130:2}-27)))"\
+          )'",
+        "authorizationList": [{
+            "address": "0xb4B46bdAA835F8E4b4d8e208B6559cD267851051",
+            "chainId": "1729",
+            "nonce": 0,
+            "r": "'0x${AUTH_SIGNATURE:2:64}'",
+            "s": "'0x${AUTH_SIGNATURE:66:64}'",
+            "yParity": "'0x0$((0x${AUTH_SIGNATURE:130:2}-27))'"
+        }]
+    }]
+  }'
 ```
 
 Then, you can test the delegation sending a transaction signed with the P256 private key. This transaction will send some `TestToken`s to `BOB_ADDRESS`:
