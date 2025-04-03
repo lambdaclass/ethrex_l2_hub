@@ -18,14 +18,22 @@ This is a frontend application built with React that connects a Web3 wallet to a
 
 ### Setup  
 ```bash
-# Create enviroment file
-cp .env.example .env
+# run your ethrex l2 mode (in your ethrex local directory)
+cd [your_ethrex_path]/crates/l2
+git checkout test_sponsor
+make restart
 
-# Install deps
-npm install  
+# Create enviroment file for the frontend app
+cp app/.env.example app/.env
 
-# Start the development server
-npm run dev  
+# Deploy contracts
+make deploy
+
+# Set enviroment for app
+set the the VITE_DELEGATION_CONTRACT_ADDRESS in app/.env with the address from the previous command
+
+# Run the frontend app
+make run-front  
 ```
 
 ## Usage  

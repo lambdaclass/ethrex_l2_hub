@@ -1,14 +1,14 @@
 import { useEffect, useState } from "react"
 import { useSwitchChain } from "wagmi"
 import { client } from "../config/passkey_config"
-import { newAccount } from '../utils/passkeyAccounts'
-import { PrivateKeyAccount, TransactionReceipt } from "viem"
+import { signUp, login } from '../utils/passkeyAccounts'
+import { Address, PrivateKeyAccount, TransactionReceipt } from "viem"
 import { CreateCredentialReturnType } from "webauthn-p256"
 
 export const AccountAbstraction: React.FC = () => {
     const [username, setUsername] = useState<string>('')
 
-    const [account, setAccount] = useState<PrivateKeyAccount | null>(null)
+    const [address, setAddress] = useState<Address | null>(null)
     const [credential, setCredential] = useState<CreateCredentialReturnType | null>(null)
     const [receipt, setReceipt] = useState<TransactionReceipt | null>(null)
 
@@ -17,14 +17,18 @@ export const AccountAbstraction: React.FC = () => {
         switchChain({ chainId: Number(import.meta.env.VITE_L2_CHAIN_ID) })
     }, [])
 
-    const handleSignup = async () => {
-        const { account, credential, receipt } = await newAccount({ client, username })
-        console.log(account)
-        console.log(credential)
-        console.log(receipt)
-        setAccount(account)
+    const handleSignUp = async () => {
+        const { address, credential, receipt } = await signUp({ client, username })
+        setAddress(address)
         setCredential(credential)
         setReceipt(receipt)
+        console.log(receipt)
+    }
+
+    const handleLogin = async () => {
+        const { address, credential } = await login({ client })
+        setAddress(address)
+        setCredential(credential)
     }
 
     return (
@@ -33,46 +37,68 @@ export const AccountAbstraction: React.FC = () => {
             <p className="text-lg text-gray-800">This page demonstrates the use of the Account Abstraction feature on Ethrex.</p>
             <br />
             <div className="example">
-                <p className="text-lg text-gray-800">
-                    <span className="font-bold text-2xl text-blue-600">1</span>.
-                    Create a passkey account
-                </p>
+                <div className="flex items-center justify-between">
+                    <p className="text-lg text-gray-800">
+                        <span className="font-bold text-2xl text-blue-600">1</span>.
+                        Create a passkey account or Login
+                    </p>
+                </div>
 
                 <hr className="border-gray-300 my-4" />
 
-                <div className="space-y-4 mt-4 max-w-md">
-                    <div className="flex gap-4">
-                        <input
-                            type="text"
-                            onChange={(e) => setUsername(e.target.value)}
-                            value={username}
-                            placeholder="User Name"
-                            className="border border-gray-300 rounded-md py-2 px-4 flex-1 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        />
-                        <button
-                            onClick={handleSignup}
-                            className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-md flex-1 transition-colors">
-                            Sign up
-                        </button>
+                <div className="space-y-4 mt-4 max-w-full">
+                    <div className="flex gap-6">
+                        {/* Left side - Create account */}
+                        <div className="flex-1 space-y-4">
+                            <div className="flex gap-4">
+                                <input
+                                    type="text"
+                                    onChange={(e) => setUsername(e.target.value)}
+                                    value={username}
+                                    placeholder="User Name"
+                                    className="border border-gray-300 rounded-md py-2 px-4 flex-1 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                />
+                                <button
+                                    onClick={handleSignUp}
+                                    className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-md flex-1 transition-colors">
+                                    Sign up
+                                </button>
+                            </div>
+                        </div>
+
+                        {/* Divider */}
+                        <div className="border-l border-gray-300"></div>
+
+                        {/* Right side - Login */}
+                        <div className="flex-1 flex items-center justify-end w-5">
+                            <button
+                                onClick={handleLogin}
+                                className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-md flex-1 transition-colors w-2">
+                                Login
+                            </button>
+                        </div>
                     </div>
                 </div>
-                {account && credential && receipt &&
+
+                {address && credential &&
                     <div className={`p-4 bg-green-300 rounded-md mt-6`}>
-                        <h3 className="text-lg font-semibold text-gray-800">The Passkeyy account has been succesfully created</h3>
+                        <h3 className="text-lg font-semibold text-gray-800">The Passkey account has been successfully created</h3>
                         <p className="text-sm text-gray-700 mt-2">
                             Address:{" "}
-                            <span className="font-mono break-all">{account.address}</span>
+                            <span className="font-mono break-all">{address}</span>
                         </p>
                         <p className="text-sm text-gray-700 mt-2">
                             Public Key Credential:{" "}
                             <span className="font-mono break-all">{credential.publicKey}</span>
                         </p>
-                        <p className="text-sm text-gray-700 mt-2">
-                            Transaction Hash:{" "}
-                            <span className="font-mono break-all">{receipt.transactionHash}</span>
-                        </p>
-                    </div>}
-
+                        {receipt &&
+                            <p className="text-sm text-gray-700 mt-2">
+                                Transaction Hash:{" "}
+                                <span className="font-mono break-all">{receipt.transactionHash}</span>
+                            </p>
+                        }
+                    </div>
+                }
             </div>
             <br />
             <div className="example">

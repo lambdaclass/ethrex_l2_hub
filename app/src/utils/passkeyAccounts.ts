@@ -1,18 +1,15 @@
 import { generatePrivateKey, privateKeyToAccount } from 'viem/accounts'
-import { type PublicKey, createCredential, parsePublicKey, sign } from 'webauthn-p256'
+import { type PublicKey, createCredential, parsePublicKey, sign, serializePublicKey } from 'webauthn-p256'
 import { type Client, queryClient } from '../config/Web3Provider';
-import { encodePacked, hexToBytes, keccak256, parseSignature } from 'viem';
+import { bytesToHex, encodePacked, Hex, hexToBytes, keccak256, parseSignature, stringToHex } from 'viem';
 import { signAuthorization } from 'viem/experimental';
-import { waitForTransactionReceipt, writeContract } from 'viem/actions';
+import { readContract, waitForTransactionReceipt, writeContract } from 'viem/actions';
 import Delegation from '../../../contracts/out/Delegation.sol/Delegation.json';
 
-export const newAccount = async ({ client, username }: { client: Client, username: string }) => {
-
+export const signUp = async ({ client, username }: { client: Client, username: string }) => {
   const account = privateKeyToAccount(generatePrivateKey())
   const sender = privateKeyToAccount(import.meta.env.VITE_ETHREX_RICH_WALLET_PK)
-
   const initial_nonce = 0n
-
 
   const credential = await createCredential({
     user: {
@@ -60,8 +57,39 @@ export const newAccount = async ({ client, username }: { client: Client, usernam
   const receipt = await waitForTransactionReceipt(client, { hash })
 
   return {
-    account,
+    address: account.address,
     credential,
     receipt
+  }
+}
+
+
+export const login = async ({ client }: { client: Client }) => {
+
+  const { raw } = await sign({
+    hash: '0x',
+  })
+
+  const response = raw.response as AuthenticatorAssertionResponse
+  const address = bytesToHex(new Uint8Array(response.userHandle!))
+
+  console.log(address)
+
+  const [publicKey] = await readContract(client, {
+    address,
+    abi: Delegation.abi,
+    functionName: 'authorizedKey',
+  }) as [PublicKey]
+
+  console.log('publicKey', publicKey)
+  console.log('credential', raw)
+
+  return {
+    address,
+    credential: {
+      id: raw.id,
+      publicKey: serializePublicKey(publicKey),
+      raw
+    }
   }
 }
