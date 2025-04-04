@@ -4,6 +4,7 @@ import { type Client } from "../config/Web3Provider";
 import {
   bytesToHex,
   encodePacked,
+  type Hex,
   hexToBytes,
   keccak256,
   parseSignature,
@@ -24,7 +25,6 @@ export const signUp = async ({
   username: string;
 }) => {
   const privateKey = generatePrivateKey();
-  console.log("Private key", privateKey);
   const account = privateKeyToAccount(privateKey);
   const sender = privateKeyToAccount(
     import.meta.env.VITE_ETHREX_RICH_WALLET_PK,
@@ -102,7 +102,8 @@ export const login = async ({ client }: { client: Client }) => {
     address,
     credential: {
       id: raw.id,
-      publicKey: `0x${publicKeyX.toString(16)}${publicKeyY.toString(16)}`,
+      publicKey:
+        `0x${publicKeyX.toString(16)}${publicKeyY.toString(16)}` as Hex,
       raw,
     },
   };
