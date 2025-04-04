@@ -113,9 +113,9 @@ export const AccountAbstraction: React.FC = () => {
         )}
       </div>
       <br />
-      <MintCard address={address} />
+      <MintCard client={client} address={address} />
       <br />
-      <TransferCard />
+      <TransferCard address={address} client={client} credential={credential} />
     </div>
   );
 };

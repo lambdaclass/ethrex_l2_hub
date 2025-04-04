@@ -4,9 +4,18 @@ import {
   waitForTransactionReceipt,
   writeContract,
 } from "viem/actions";
+import Delegation from "../../../contracts/out/Delegation.sol/Delegation.json";
 import TestToken from "../../../contracts/out/TestToken.sol/TestToken.json";
-import { type TransactionReceipt, type Address } from "viem";
-import { type Client } from "../config/Web3Provider";
+import {
+  type TransactionReceipt,
+  type Address,
+  encodeAbiParameters,
+  keccak256,
+  encodePacked,
+  slice,
+} from "viem";
+import { Client, client } from "../config/Web3Provider";
+import { sign } from "webauthn-p256";
 
 export const mintToken = async (
   client: Client,
@@ -37,4 +46,63 @@ export const getTokenBalance = async (
     functionName: "balanceOf",
     args: [address],
   })) as bigint;
+};
+
+export const transferToken = async (
+  client: Client,
+  from: Address,
+  to: Address,
+  amount: bigint,
+  credentialId: string,
+): Promise<TransactionReceipt> => {
+  const sender = privateKeyToAccount(
+    import.meta.env.VITE_ETHREX_RICH_WALLET_PK,
+  );
+
+  const nonce = (await readContract(client, {
+    abi: Delegation.abi,
+    address: from,
+    functionName: "nonce",
+  })) as bigint;
+
+  const calldata = encodeAbiParameters(
+    [
+      { name: "from", type: "string" },
+      { name: "amount", type: "uint256" },
+    ],
+    [from, amount],
+  );
+
+  const digest = keccak256(
+    encodePacked(
+      ["uint256", "address", "uint256", "bytes"],
+      [nonce, to, 0n, calldata],
+    ),
+  );
+
+  const { signature, webauthn } = await sign({
+    hash: digest,
+    credentialId: credentialId,
+  });
+
+  const r = BigInt(slice(signature, 0, 32));
+  const s = BigInt(slice(signature, 32, 64));
+
+  const hash = await writeContract(client, {
+    abi: Delegation.abi,
+    address: from,
+    functionName: "execute",
+    args: [
+      import.meta.env.VITE_TEST_TOKEN_CONTRACT_ADDRESS,
+      0n,
+      calldata,
+      { r, s },
+      webauthn,
+    ],
+    account: sender,
+  });
+
+  console.log(hash);
+
+  return await waitForTransactionReceipt(client, { hash });
 };
