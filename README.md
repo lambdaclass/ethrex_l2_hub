@@ -30,7 +30,7 @@ cp app/.env.example app/.env
 make deploy
 
 # Set enviroment for app
-set the the VITE_DELEGATION_CONTRACT_ADDRESS in app/.env with the address from the previous command
+set the the VITE_DELEGATION_CONTRACT_ADDRESS and VITE_TEST_TOKEN_CONTRACT_ADDRESS in app/.env with the addresses from the previous command
 
 # Run the frontend app
 make run-front  
