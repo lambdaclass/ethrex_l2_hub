@@ -14,7 +14,7 @@ import {
   encodePacked,
   slice,
 } from "viem";
-import { Client, client } from "../config/Web3Provider";
+import { type Client } from "../config/Web3Provider";
 import { sign } from "webauthn-p256";
 
 export const mintToken = async (
@@ -65,18 +65,19 @@ export const transferToken = async (
     functionName: "nonce",
   })) as bigint;
 
-  const calldata = encodeAbiParameters(
-    [
-      { name: "from", type: "string" },
-      { name: "amount", type: "uint256" },
-    ],
-    [from, amount],
-  );
+  const calldata = ("0xa9059cbb" +
+    encodeAbiParameters(
+      [
+        { name: "to", type: "address" },
+        { name: "amount", type: "uint256" },
+      ],
+      [to, amount],
+    ).substring(2)) as `0x${string}`;
 
   const digest = keccak256(
     encodePacked(
       ["uint256", "address", "uint256", "bytes"],
-      [nonce, to, 0n, calldata],
+      [nonce, import.meta.env.VITE_TEST_TOKEN_CONTRACT_ADDRESS, 0n, calldata],
     ),
   );
 
@@ -101,8 +102,6 @@ export const transferToken = async (
     ],
     account: sender,
   });
-
-  console.log(hash);
 
   return await waitForTransactionReceipt(client, { hash });
 };

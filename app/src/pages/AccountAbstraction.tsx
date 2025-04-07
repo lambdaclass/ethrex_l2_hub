@@ -6,6 +6,7 @@ import { Address, TransactionReceipt } from "viem";
 import { CreateCredentialReturnType } from "webauthn-p256";
 import MintCard from "../components/AccountAbstraction/MintCard";
 import TransferCard from "../components/AccountAbstraction/TransferCard";
+import Loading from "../components/Loading";
 
 export const AccountAbstraction: React.FC = () => {
   const [username, setUsername] = useState<string>("");
@@ -14,6 +15,7 @@ export const AccountAbstraction: React.FC = () => {
   const [credential, setCredential] =
     useState<CreateCredentialReturnType | null>(null);
   const [receipt, setReceipt] = useState<TransactionReceipt | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
 
   const { switchChain } = useSwitchChain();
   useEffect(() => {
@@ -21,7 +23,9 @@ export const AccountAbstraction: React.FC = () => {
   }, []);
 
   const handleSignUp = async () => {
+    setLoading(true);
     const { address, credential, receipt } = await signUp({ client, username });
+    setLoading(false);
     setAddress(address);
     setCredential(credential);
     setReceipt(receipt);
@@ -34,7 +38,7 @@ export const AccountAbstraction: React.FC = () => {
   };
 
   return (
-    <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-3xl">
+    <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-3xl my-6">
       <h2 className="text-xl font-semibold mb-4 text-center">Passkey Demo</h2>
       <p className="text-lg text-gray-800">
         This page demonstrates the use of the Account Abstraction feature on
@@ -65,7 +69,7 @@ export const AccountAbstraction: React.FC = () => {
                 />
                 <button
                   onClick={handleSignUp}
-                  className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-md flex-1 transition-colors"
+                  className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-md flex-1 transition-colors cursor-pointer"
                 >
                   Sign up
                 </button>
@@ -79,7 +83,7 @@ export const AccountAbstraction: React.FC = () => {
             <div className="flex-1 flex items-center justify-end w-5">
               <button
                 onClick={handleLogin}
-                className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-md flex-1 transition-colors w-2"
+                className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-md flex-1 transition-colors w-2 cursor-pointer"
               >
                 Login
               </button>
@@ -87,7 +91,9 @@ export const AccountAbstraction: React.FC = () => {
           </div>
         </div>
 
-        {address && credential && (
+        {loading && <Loading />}
+
+        {!loading && address && credential && (
           <div className={`p-4 bg-green-300 rounded-md mt-6`}>
             <h3 className="text-lg font-semibold text-gray-800">
               The Passkey account has been successfully created
@@ -115,7 +121,11 @@ export const AccountAbstraction: React.FC = () => {
       <br />
       <MintCard client={client} address={address} />
       <br />
-      <TransferCard address={address} client={client} credential={credential} />
+      <TransferCard
+        address={address}
+        client={client}
+        credentialId={credential?.id || null}
+      />
     </div>
   );
 };
