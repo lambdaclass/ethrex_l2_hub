@@ -9,10 +9,10 @@ import TestToken from "../../../contracts/out/TestToken.sol/TestToken.json";
 import {
   type TransactionReceipt,
   type Address,
-  encodeAbiParameters,
   keccak256,
   encodePacked,
   slice,
+  encodeFunctionData,
 } from "viem";
 import { type Client } from "../config/Web3Provider";
 import { sign } from "webauthn-p256";
@@ -65,14 +65,11 @@ export const transferToken = async (
     functionName: "nonce",
   })) as bigint;
 
-  const calldata = ("0xa9059cbb" +
-    encodeAbiParameters(
-      [
-        { name: "to", type: "address" },
-        { name: "amount", type: "uint256" },
-      ],
-      [to, amount],
-    ).substring(2)) as `0x${string}`;
+  const calldata = encodeFunctionData({
+    abi: TestToken.abi,
+    functionName: "transfer",
+    args: [to, amount],
+  });
 
   const digest = keccak256(
     encodePacked(
