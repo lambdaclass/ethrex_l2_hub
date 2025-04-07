@@ -1,16 +1,10 @@
 import { useEffect, useState } from "react";
 import { getTokenBalance, mintToken } from "../../utils/token";
 import { type TransactionReceipt, type Address } from "viem";
-import { type Client } from "../../config/Web3Provider";
 import Loading from "../Loading";
+import { client } from "../../config/passkey_config";
 
-export default function MintCard({
-  address,
-  client,
-}: {
-  address: Address | null;
-  client: Client;
-}) {
+export default function MintCard({ address }: { address: Address | null }) {
   const [tokens, setTokens] = useState<bigint | undefined>();
   const [mintValue, setMintValue] = useState<bigint>(10n);
   const [receipt, setReceipt] = useState<TransactionReceipt | null>(null);

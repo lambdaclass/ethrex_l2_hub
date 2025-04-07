@@ -1,17 +1,23 @@
-import { QueryClient } from '@tanstack/react-query'
-import { http, createConfig } from 'wagmi'
-import { L2 } from './layers'
-
-export const queryClient = new QueryClient()
+import { http, createConfig } from "wagmi";
+import { L2 } from "./layers";
 
 export const wagmiConfig = createConfig({
-    chains: [L2],
-    pollingInterval: 1000,
-    transports: {
-        [L2.id]: http(),
-    },
+  chains: [L2],
+  pollingInterval: 1000,
+  transports: {
+    [L2.id]: http(),
+  },
+});
 
-})
+export const client = wagmiConfig.getClient();
+const base_request = client.request;
 
-export const client = wagmiConfig.getClient()
-export type Client = typeof client
+client.request = async ({ method, params }) => {
+  if (method === "eth_sendTransaction") {
+    method = "ethrex_sendTransaction";
+  }
+
+  return base_request({ method, params });
+};
+
+export type Client = typeof client;

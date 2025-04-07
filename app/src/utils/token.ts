@@ -14,7 +14,7 @@ import {
   slice,
   encodeFunctionData,
 } from "viem";
-import { type Client } from "../config/Web3Provider";
+import { type Client } from "../config/passkey_config";
 import { sign } from "webauthn-p256";
 
 export const mintToken = async (
@@ -55,10 +55,6 @@ export const transferToken = async (
   amount: bigint,
   credentialId: string,
 ): Promise<TransactionReceipt> => {
-  const sender = privateKeyToAccount(
-    import.meta.env.VITE_ETHREX_RICH_WALLET_PK,
-  );
-
   const nonce = (await readContract(client, {
     abi: Delegation.abi,
     address: from,
@@ -97,7 +93,7 @@ export const transferToken = async (
       { r, s },
       webauthn,
     ],
-    account: sender,
+    account: null,
   });
 
   return await waitForTransactionReceipt(client, { hash });

@@ -1,9 +1,9 @@
 import { useState } from "react";
 import Loading from "../Loading";
 import { login, signUp } from "../../utils/passkeyAccounts";
-import { client } from "../../config/passkey_config";
 import { type TransactionReceipt, type Address } from "viem";
 import { type CreateCredentialReturnType } from "webauthn-p256";
+import { client } from "../../config/passkey_config";
 
 export default function AccountCard({
   address,

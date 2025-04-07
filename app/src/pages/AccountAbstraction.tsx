@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { useSwitchChain } from "wagmi";
-import { client } from "../config/passkey_config";
 import { type Address } from "viem";
 import { type CreateCredentialReturnType } from "webauthn-p256";
 import MintCard from "../components/AccountAbstraction/MintCard";
@@ -32,13 +31,9 @@ export const AccountAbstraction: React.FC = () => {
         setCredential={setCredential}
       />
       <br />
-      <MintCard client={client} address={address} />
+      <MintCard address={address} />
       <br />
-      <TransferCard
-        address={address}
-        client={client}
-        credentialId={credential?.id || null}
-      />
+      <TransferCard address={address} credentialId={credential?.id || null} />
     </div>
   );
 };

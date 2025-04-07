@@ -1,6 +1,6 @@
 import { generatePrivateKey, privateKeyToAccount } from "viem/accounts";
 import { createCredential, parsePublicKey, sign } from "webauthn-p256";
-import { type Client } from "../config/Web3Provider";
+import { type Client } from "../config/passkey_config";
 import {
   bytesToHex,
   encodePacked,
@@ -26,9 +26,6 @@ export const signUp = async ({
 }) => {
   const privateKey = generatePrivateKey();
   const account = privateKeyToAccount(privateKey);
-  const sender = privateKeyToAccount(
-    import.meta.env.VITE_ETHREX_RICH_WALLET_PK,
-  );
   const initial_nonce = 0n;
 
   const credential = await createCredential({
@@ -55,6 +52,7 @@ export const signUp = async ({
     delegate: true,
   });
 
+  console.log("HERE", client.transport.request);
   const hash = await writeContract(client, {
     abi: Delegation.abi,
     address: account.address,
@@ -71,8 +69,8 @@ export const signUp = async ({
       },
     ],
     authorizationList: [authorization],
-    account: sender,
     gas: 124000n, // This is a temporary fix while gas estimate is fixed in ethrex
+    account: null,
   });
 
   const receipt = await waitForTransactionReceipt(client, { hash });
