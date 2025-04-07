@@ -4,7 +4,13 @@ import { type TransactionReceipt, type Address } from "viem";
 import Loading from "../Loading";
 import { client } from "../../config/passkey_config";
 
-export default function MintCard({ address }: { address: Address | null }) {
+export default function MintCard({
+  address,
+  credentialId,
+}: {
+  address: Address | null;
+  credentialId: string | null;
+}) {
   const [tokens, setTokens] = useState<bigint | undefined>();
   const [mintValue, setMintValue] = useState<bigint>(10n);
   const [receipt, setReceipt] = useState<TransactionReceipt | null>(null);
@@ -21,7 +27,7 @@ export default function MintCard({ address }: { address: Address | null }) {
   };
 
   const handleMint = async () => {
-    if (address === null) {
+    if (address === null || credentialId === null) {
       return;
     }
 
@@ -30,10 +36,11 @@ export default function MintCard({ address }: { address: Address | null }) {
       client,
       address,
       mintValue * 1000000000000000000n,
+      credentialId!,
     );
     setLoading(false);
     setReceipt(_receipt);
-    setTokens(mintValue * 1000000000000000000n);
+    setTokens((tokens ?? 0n) + mintValue * 1000000000000000000n);
   };
 
   useEffect(() => {

@@ -31,7 +31,7 @@ export const AccountAbstraction: React.FC = () => {
         setCredential={setCredential}
       />
       <br />
-      <MintCard address={address} />
+      <MintCard address={address} credentialId={credential?.id || null} />
       <br />
       <TransferCard address={address} credentialId={credential?.id || null} />
     </div>

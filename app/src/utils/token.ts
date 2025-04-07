@@ -21,16 +21,47 @@ export const mintToken = async (
   client: Client,
   to: Address,
   amount: bigint,
+  credentialId: string,
 ): Promise<TransactionReceipt> => {
-  const sender = privateKeyToAccount(
-    import.meta.env.VITE_ETHREX_RICH_WALLET_PK,
-  );
-  const hash = await writeContract(client, {
+  const nonce = (await readContract(client, {
+    abi: Delegation.abi,
+    address: to,
+    functionName: "nonce",
+  })) as bigint;
+
+  const calldata = encodeFunctionData({
     abi: TestToken.abi,
-    address: import.meta.env.VITE_TEST_TOKEN_CONTRACT_ADDRESS,
-    functionName: "transfer",
+    functionName: "mint",
     args: [to, amount],
-    account: sender,
+  });
+
+  const digest = keccak256(
+    encodePacked(
+      ["uint256", "address", "uint256", "bytes"],
+      [nonce, import.meta.env.VITE_TEST_TOKEN_CONTRACT_ADDRESS, 0n, calldata],
+    ),
+  );
+
+  const { signature, webauthn } = await sign({
+    hash: digest,
+    credentialId: credentialId,
+  });
+
+  const r = BigInt(slice(signature, 0, 32));
+  const s = BigInt(slice(signature, 32, 64));
+
+  const hash = await writeContract(client, {
+    abi: Delegation.abi,
+    address: to,
+    functionName: "execute",
+    args: [
+      import.meta.env.VITE_TEST_TOKEN_CONTRACT_ADDRESS,
+      0n,
+      calldata,
+      { r, s },
+      webauthn,
+    ],
+    account: null,
   });
 
   return await waitForTransactionReceipt(client, { hash });

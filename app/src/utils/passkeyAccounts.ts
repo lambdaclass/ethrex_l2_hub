@@ -52,7 +52,6 @@ export const signUp = async ({
     delegate: true,
   });
 
-  console.log("HERE", client.transport.request);
   const hash = await writeContract(client, {
     abi: Delegation.abi,
     address: account.address,
