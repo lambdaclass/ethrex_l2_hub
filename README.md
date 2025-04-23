@@ -18,14 +18,22 @@ This is a frontend application built with React that connects a Web3 wallet to a
 
 ### Setup  
 ```bash
-# Create enviroment file
-cp .env.example .env
+# run your ethrex l2 mode (in your ethrex local directory)
+cd [your_ethrex_path]/crates/l2
+git checkout test_sponsor
+make restart
 
-# Install deps
-npm install  
+# Create enviroment file for the frontend app
+cp app/.env.example app/.env
 
-# Start the development server
-npm run dev  
+# Deploy contracts
+make deploy
+
+# Set enviroment for app
+set the the VITE_DELEGATION_CONTRACT_ADDRESS and VITE_TEST_TOKEN_CONTRACT_ADDRESS in app/.env with the addresses from the previous command
+
+# Run the frontend app
+make run-front  
 ```
 
 ## Usage  
@@ -38,6 +46,13 @@ If needed, update the RPC URLs and contract addresses in the environment variabl
 
 ## Contributing  
 Feel free to submit pull requests or open issues for bug fixes and feature suggestions.  
+
+## References and acknowledgements
+The following links, repos, companies and projects have been important in the development of this repo, we have learned a lot from them and want to thank and acknowledge them.
+
+[Ithaca  Account Delegation with EIP-7702](https://github.com/ithacaxyz/exp-0001)
+[EIP-7212: Precompiled for secp256r1 Curve Support](https://ethereum-magicians.org/t/eip-7212-precompiled-for-secp256r1-curve-support/14789)
+[dopewars] (https://dopewars.game/)
 
 ## License  
 MIT  
