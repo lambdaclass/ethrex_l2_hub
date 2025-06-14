@@ -2,6 +2,8 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { Bridge } from "./pages/Bridge";
 import { Header } from "./components/Header";
 import { AccountAbstraction } from "./pages/AccountAbstraction";
+import { Deposit } from "./components/Deposit";
+import { Withdraw } from "./components/Withdraw";
 
 
 const App: React.FC = () =>
@@ -12,8 +14,9 @@ const App: React.FC = () =>
       {/* Main Content */}
       <main className="flex-grow flex items-center justify-center">
         <Routes>
-          <Route path="/" element={<Bridge />} />
-          <Route path="/bridge" element={<Bridge />} />
+          <Route path="/" element={<>Welcome</>} />
+          <Route path="/bridge/deposit" element={<Deposit />} />
+          <Route path="/bridge/withdraw" element={<Withdraw />} />
           <Route path="/passkey_demo" element={<AccountAbstraction />} />
         </Routes>
       </main>

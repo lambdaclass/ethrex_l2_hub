@@ -1,4 +1,4 @@
-import { WagmiProvider, createConfig, http } from "wagmi";
+import { WagmiProvider, createConfig, http, } from "wagmi";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ConnectKitProvider, getDefaultConfig } from "connectkit";
 import { L1, L2 } from "./layers";
@@ -9,8 +9,8 @@ const config = createConfig(
     chains: [L1, L2],
     transports: {
       // RPC URL for each chain
-      [L1.id]: http(),
-      [L2.id]: http(),
+      [L1.id]: http(import.meta.env.VITE_L1_RPC_URL),
+      [L2.id]: http(import.meta.env.VITE_L2_RPC_URL), // Replace with your L2 RPC URL
     },
 
     // Required API Keys

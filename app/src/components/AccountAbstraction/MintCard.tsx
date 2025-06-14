@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { getTokenBalance, mintToken } from "../../utils/token";
 import { type TransactionReceipt, type Address } from "viem";
-import Loading from "../Loading";
+import { Loading } from "../Loading";
 import { client } from "../../config/passkey_config";
 
 export default function MintCard({

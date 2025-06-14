@@ -1,17 +1,30 @@
 import { useState, useEffect } from "react";
 import { parseEther } from "viem";
-import { useWaitForTransactionReceipt } from "wagmi";
-import { useDeposit } from "../hooks/deposit";
+import { useAccount, useSwitchChain, useWaitForTransactionReceipt } from "wagmi";
+import { useDeposit, useWatchDepositInitiated } from "../hooks/deposit";
 
 export const Deposit: React.FC = () => {
   const [amount, setAmount] = useState<string>("");
+  const { address } = useAccount();
   const { data, isPending, isSuccess: isTxSuccess, deposit } = useDeposit({ amount: parseEther(amount) })
   const { isLoading, isSuccess: isTxReciptSuccess } = useWaitForTransactionReceipt({ hash: data })
+
+  const { switchChain } = useSwitchChain()
+
+  useEffect(() => {
+    switchChain({ chainId: Number(import.meta.env.VITE_L1_CHAIN_ID) })
+  }, [])
 
   useEffect(() => {
     if (isTxReciptSuccess)
       setAmount("")
   }, [isTxReciptSuccess])
+
+  useWatchDepositInitiated({
+    onLogs: (logs) => {
+      console.log(logs)
+    }
+  })
 
   return (
     <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
@@ -41,28 +54,11 @@ export const Deposit: React.FC = () => {
             {isLoading &&
               <p className="text-sm text-gray-500 mt-2">Waiting for confirmation...</p>}
             {isTxReciptSuccess &&
-              <p className="text-sm text-gray-700 mt-2">The deposit has been confirmed!</p>}
+              <p className="text-sm text-gray-700 mt-2">The deposit has been sent!</p>}
+            {
+
+            }
           </div>}
-
-
-        {/* Confirmation Box 
-            {transactionReceipt && (
-                <div className="mt-6 p-4 bg-green-50 border border-green-200 rounded-md">
-                    <h3 className="text-lg font-semibold text-green-800">Transaction Successful!</h3>
-                    <p className="text-sm text-green-700 mt-2">
-                        Transaction Hash:{" "}
-                        <span className="font-mono break-all">{transactionReceipt.transactionHash}</span>
-                    </p>
-                    <p className="text-sm text-green-700">
-                        Amount Bridged:{" "}
-                        <span className="font-mono">{transactionReceipt.amount}</span>
-                    </p>
-                    <p className="text-sm text-green-700">
-                        Status:{" "}
-                        <span className="font-mono">{transactionReceipt.status}</span>
-                    </p>
-                </div>
-            )}*/}
       </div>
     </div>
   )

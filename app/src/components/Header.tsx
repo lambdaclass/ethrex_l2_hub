@@ -9,17 +9,23 @@ export const Header: React.FC = () =>
       <h1 className="text-2xl font-bold text-gray-800">EthRex Hub</h1>
       <nav className="flex space-x-4">
         <Link
-          to="/bridge"
+          to="/bridge/withdraw"
           className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium transition-colors"
         >
-          Bridge
+          Withdraw
         </Link>
         <Link
+          to="/bridge/deposit"
+          className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium transition-colors"
+        >
+          Deposit
+        </Link>
+        {/* <Link
           to="/passkey_demo"
           className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium transition-colors"
         >
           Passkey Demo
-        </Link>
+        </Link> */}
       </nav>
     </div>
     {/* Right side - Wallet components */}
