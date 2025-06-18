@@ -10,9 +10,9 @@ export const Withdraw: React.FC = () => {
   const [amount, setAmount] = useState<string>("");
   const { data, isPending, isSuccess, withdraw } = useWithdraw({ amount: parseEther(amount) })
   const [proof, setProof] = useState<WithdrawalProof | null>(null);
-  const { switchChain } = useSwitchChain()
+  const { switchChain, switchChainAsync } = useSwitchChain()
   const { data: dataClaim, isPending: isPendingCLaim, isSuccess: isSuccessClaim, claimWithdraw } = useClaimWithdraw({ amount: parseEther(amount), proof: proof as WithdrawalProof });
-  const { data: dataReceipt, isLoading, isSuccess: isTxReciptSuccess } = useWaitForTransactionReceipt({ hash: dataClaim })
+  const { data: dataReceipt, isLoading, isSuccess: isTxReciptSuccess, error } = useWaitForTransactionReceipt({ hash: dataClaim })
 
   useEffect(() => {
     switchChain({ chainId: Number(import.meta.env.VITE_L2_CHAIN_ID) })
@@ -43,10 +43,18 @@ export const Withdraw: React.FC = () => {
     console.log("Data Receipt:", dataReceipt);
   }, [dataReceipt])
 
+  useEffect(() => {
+    console.log("Data error:", error);
+  }, [error])
+
   const claimWithdrawClick = async () => {
-    switchChain({ chainId: Number(import.meta.env.VITE_L1_CHAIN_ID) });
+    await switchChainAsync({ chainId: Number(import.meta.env.VITE_L1_CHAIN_ID) });
     claimWithdraw();
   }
+
+  useEffect(() => {
+    console.log("Data Claim:", dataClaim);
+  }, [dataReceipt]);
 
   return (
     <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
