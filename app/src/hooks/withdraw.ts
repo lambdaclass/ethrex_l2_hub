@@ -8,11 +8,13 @@ import { WithdrawalProof } from "../utils/customRpcMethods"
 const commondPropsL2 = {
   abi: CommonBridgeL2Abi,
   address: import.meta.env.VITE_L2_BRIDGE_ADDRESS,
+  chainId: Number(import.meta.env.VITE_L2_CHAIN_ID),
 }
 
 const commondPropsL1 = {
   abi: CommonBridgeL1Abi,
   address: import.meta.env.VITE_L1_BRIDGE_ADDRESS,
+  chainId: Number(import.meta.env.VITE_L1_CHAIN_ID),
 }
 
 export type WithdrawProps = {
@@ -43,7 +45,7 @@ export const useWithdraw = ({ amount }: { amount: bigint }) => {
   return { withdraw, ...useWriteContractValues }
 }
 
-export const useClaimWithdraw = ({ amount, proof }: { amount: bigint, proof: WithdrawalProof }) => {
+export const useClaimWithdraw = ({ amount, proof, withdrawal_hash }: { amount: bigint, proof: WithdrawalProof, withdrawal_hash: `0x${string}` }) => {
   const { writeContract, writeContractAsync, ...useWriteContractValues } = useWriteContract()
 
   const claimWithdraw = () =>
@@ -51,7 +53,7 @@ export const useClaimWithdraw = ({ amount, proof }: { amount: bigint, proof: Wit
       ...commondPropsL1,
       functionName: 'claimWithdrawal',
       args: [
-        proof.withdrawal_hash,
+        withdrawal_hash,
         amount,
         proof.batch_number,
         proof.index,

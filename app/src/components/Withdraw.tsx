@@ -10,15 +10,14 @@ export const Withdraw: React.FC = () => {
   const [amount, setAmount] = useState<string>("");
   const { data, isPending, isSuccess, withdraw } = useWithdraw({ amount: parseEther(amount) })
   const [proof, setProof] = useState<WithdrawalProof | null>(null);
-  const { switchChain, switchChainAsync } = useSwitchChain()
-  const { data: dataClaim, isPending: isPendingCLaim, isSuccess: isSuccessClaim, claimWithdraw } = useClaimWithdraw({ amount: parseEther(amount), proof: proof as WithdrawalProof });
+  const { data: dataClaim, isPending: isPendingCLaim, isSuccess: isSuccessClaim, claimWithdraw } = useClaimWithdraw({ amount: parseEther(amount), proof: proof as WithdrawalProof, withdrawal_hash: data || "0x" });
   const { data: dataReceipt, isLoading, isSuccess: isTxReciptSuccess, error } = useWaitForTransactionReceipt({ hash: dataClaim })
+  const client = usePublicClient()
+  const { switchChain, switchChainAsync } = useSwitchChain()
 
   useEffect(() => {
     switchChain({ chainId: Number(import.meta.env.VITE_L2_CHAIN_ID) })
   }, [])
-
-  const client = usePublicClient()
 
   const waitWithdrawalProof = async (client: PublicClient, txHash: Address) => {
     try {

@@ -5,6 +5,7 @@ import { Address, Log } from "viem"
 const commondProps = {
     abi: CommonBridgeL1Abi,
     address: import.meta.env.VITE_L1_BRIDGE_ADDRESS,
+    chainId: Number(import.meta.env.VITE_L1_CHAIN_ID),
 }
 
 export type useDepositProps = {
@@ -30,9 +31,10 @@ export const useDeposit = ({ amount }: useDepositProps) => {
     const { sendTransaction, sendTransactionAsync, ...useSendTransactionValues } = useSendTransaction()
 
     const deposit = () =>
-        sendTransaction({
+        sendTransactionAsync({
             to: import.meta.env.VITE_L1_BRIDGE_ADDRESS,
             value: amount,
+            chainId: Number(import.meta.env.VITE_L1_CHAIN_ID),
         })
 
     return { deposit, ...useSendTransactionValues }

@@ -8,7 +8,6 @@ export const Deposit: React.FC = () => {
   const { address } = useAccount();
   const { data, isPending, isSuccess: isTxSuccess, deposit } = useDeposit({ amount: parseEther(amount) })
   const { isLoading, isSuccess: isTxReciptSuccess } = useWaitForTransactionReceipt({ hash: data })
-
   const { switchChain } = useSwitchChain()
 
   useEffect(() => {
