@@ -184,6 +184,8 @@ This feature leverages:
 
 Rex is a CLI tool that helps you debug and interact with your L1 and L2 chains. Here are some useful commands:
 
+<!--- FIXME: Check rex commands, i think some of these are not correct --->
+
 ```bash
 # Check the transaction receipt for error details
 rex receipt <DEPLOYMENT_TX_HASH> --rpc-url http://localhost:1729
