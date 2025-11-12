@@ -15,14 +15,22 @@ This is a frontend application built with React that connects a Web3 wallet to a
 ### Prerequisites  
 - **Node.js** (v21+ recommended)  
 - **npm**  
+- **Ethrex**
+- **Solc** (v0.8.28)
 
 ### Setup  
 ```bash
 # run your ethrex l2 mode (in your ethrex local directory)
 cd [your_ethrex_path]/crates/l2
 git checkout test_sponsor
+
+# In one terminal, run L1 + L2 with the following command:
 make restart
 
+# For the L2, we need a prover executable. Wait unitl the L2 is running and then run the following command:
+make init-prover-exec
+
+# Now we can deploy our app
 # Create enviroment file for the frontend app
 cp app/.env.example app/.env
 
@@ -33,7 +41,7 @@ make deploy
 set the the VITE_DELEGATION_CONTRACT_ADDRESS and VITE_TEST_TOKEN_CONTRACT_ADDRESS in app/.env with the addresses from the previous command
 
 # Run the frontend app
-make run-front  
+make run-front
 ```
 
 ## Usage  
