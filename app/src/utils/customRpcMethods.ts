@@ -1,4 +1,4 @@
-import { PublicClient } from 'viem';
+import { PublicClient } from "viem";
 
 export type WithdrawalProof = {
   batch_number: bigint;
@@ -7,23 +7,37 @@ export type WithdrawalProof = {
   merkle_proof: `0x${string}`[];
 };
 
+type L1MessageProof = {
+  batch_number: number;
+  message_id: string;
+  message_hash: `0x${string}`;
+  merkle_proof: `0x${string}`[];
+};
+
 export async function getWithdrawalProof(
   client: PublicClient,
   txHash: `0x${string}`
 ): Promise<WithdrawalProof> {
-  const result = await client.request({
-    method: 'ethrex_getWithdrawalProof' as any,
+  const result = (await client.request({
+    method: "ethrex_getMessageProof" as any,
     params: [txHash],
-  }) as WithdrawalProof;
+  })) as L1MessageProof[];
 
-  if (!result) {
-    throw new Error('No withdrawal proof found for the given transaction hash yet');
+  console.log("Result Message Proof:", result);
+
+  if (!result || result.length === 0) {
+    throw new Error(
+      "No withdrawal proof found for the given transaction hash yet"
+    );
   }
 
+  // Take the first element of the array
+  const proof = result[0];
+
   return {
-    batch_number: BigInt(result.batch_number),
-    index: result.index,
-    withdrawal_hash: result.withdrawal_hash,
-    merkle_proof: result.merkle_proof,
+    batch_number: BigInt(proof.batch_number),
+    index: parseInt(proof.message_id, 16),
+    withdrawal_hash: proof.message_hash,
+    merkle_proof: proof.merkle_proof,
   };
 }

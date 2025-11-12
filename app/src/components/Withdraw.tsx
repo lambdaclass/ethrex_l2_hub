@@ -8,9 +8,10 @@ import { Loading } from "./Loading";
 export const Withdraw: React.FC = () => {
   const { address } = useAccount()
   const [amount, setAmount] = useState<string>("");
+  const [withdrawnAmount, setWithdrawnAmount] = useState<bigint>(0n);
   const { data, isPending, isSuccess, withdraw } = useWithdraw({ amount: parseEther(amount) })
   const [proof, setProof] = useState<WithdrawalProof | null>(null);
-  const { data: dataClaim, isPending: isPendingCLaim, isSuccess: isSuccessClaim, claimWithdraw } = useClaimWithdraw({ amount: parseEther(amount), proof: proof as WithdrawalProof, withdrawal_hash: data || "0x" });
+  const { data: dataClaim, isPending: isPendingCLaim, isSuccess: isSuccessClaim, claimWithdraw } = useClaimWithdraw({ amount: withdrawnAmount, proof: proof as WithdrawalProof });
   const { data: dataReceipt, isLoading, isSuccess: isTxReciptSuccess, error } = useWaitForTransactionReceipt({ hash: dataClaim })
   const client = usePublicClient()
   const { switchChain, switchChainAsync } = useSwitchChain()
@@ -21,9 +22,21 @@ export const Withdraw: React.FC = () => {
 
   const waitWithdrawalProof = async (client: PublicClient, txHash: Address) => {
     try {
+      const receipt = await client.getTransactionReceipt({ hash: txHash });
+
+      // Find the WithdrawalInitiated event log
+      const withdrawalLog = receipt.logs.find(log =>
+        log.address.toLowerCase() === import.meta.env.VITE_L2_BRIDGE_ADDRESS.toLowerCase()
+      );
+
+      if (withdrawalLog && withdrawalLog.topics.length >= 4 && withdrawalLog.topics[3]) {
+        // The amount is in topics[3] (indexed parameter)
+        const amountFromLog = BigInt(withdrawalLog.topics[3]);
+        setWithdrawnAmount(amountFromLog);
+      }
+
       const proof = await getWithdrawalProof(client, txHash);
       setProof(proof);
-      console.log("Withdrawal Proof:", proof);
     } catch (error) {
       setTimeout(() => waitWithdrawalProof(client, txHash), 5000);
     }
@@ -38,22 +51,15 @@ export const Withdraw: React.FC = () => {
     args: { senderOnL2: address, receiverOnL1: address }
   })
 
-  useEffect(() => {
-    console.log("Data Receipt:", dataReceipt);
-  }, [dataReceipt])
-
-  useEffect(() => {
-    console.log("Data error:", error);
-  }, [error])
 
   const claimWithdrawClick = async () => {
-    await switchChainAsync({ chainId: Number(import.meta.env.VITE_L1_CHAIN_ID) });
-    claimWithdraw();
+    try {
+      await switchChainAsync({ chainId: Number(import.meta.env.VITE_L1_CHAIN_ID) });
+      claimWithdraw();
+    } catch (error) {
+      console.error("Error claiming withdrawal:", error);
+    }
   }
-
-  useEffect(() => {
-    console.log("Data Claim:", dataClaim);
-  }, [dataReceipt]);
 
   return (
     <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
