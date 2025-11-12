@@ -25,7 +25,7 @@ Follow these steps to get the entire system running.
 
 ### Phase 1: Ethrex Setup
 
-1. Clone Ethrex
+1. Clone [ethrex](https://github.com/lambdaclass/ethrex)
 
 ```bash
 git clone https://github.com/lambdaclass/ethrex.git && cd ethrex/crates/l2
@@ -68,6 +68,8 @@ Keep this terminal running. The prover must stay active for the L2 to function p
 ### Phase 2: Deploy the Hub App
 
 5. Configure environment variables
+
+In another terminal window, in the root of the project, run:
 
 ```bash
 cp app/.env.example app/.env
