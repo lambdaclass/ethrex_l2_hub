@@ -45,15 +45,14 @@ export const useWithdraw = ({ amount }: { amount: bigint }) => {
   return { withdraw, ...useWriteContractValues }
 }
 
-export const useClaimWithdraw = ({ amount, proof, withdrawal_hash }: { amount: bigint, proof: WithdrawalProof, withdrawal_hash: `0x${string}` }) => {
-  const { writeContract, writeContractAsync, ...useWriteContractValues } = useWriteContract()
+export const useClaimWithdraw = ({ amount, proof }: { amount: bigint, proof: WithdrawalProof }) => {
+  const { writeContract, ...useWriteContractValues } = useWriteContract()
 
-  const claimWithdraw = () =>
+  const claimWithdraw = () => 
     writeContract({
       ...commondPropsL1,
       functionName: 'claimWithdrawal',
       args: [
-        withdrawal_hash,
         amount,
         proof.batch_number,
         proof.index,
