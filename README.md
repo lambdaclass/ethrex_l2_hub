@@ -4,9 +4,9 @@
 
 A full-stack demonstration of **Ethrex L2**, showcasing a Layer 2 rollup solution with bridge capabilities and account abstraction features. This React-based frontend allows users to:
 
-- **Bridge assets** between L1 and L2 (deposit, withdraw, claim)
-- **Use Account Abstraction** to mint and transfer tokens with passkey authentication (fingerprint/biometrics)
-- **Interact with Ethrex Rollup** without complex wallet management
+- Bridge assets between L1 and L2 (deposit, withdraw, claim)
+- Use Account Abstraction to mint and transfer tokens with passkey authentication (fingerprint/biometrics)
+- Interact with Ethrex Rollup without complex wallet management
 
 ## Prerequisites
 
@@ -138,7 +138,7 @@ This feature leverages:
 ### Connecting Your Wallet
 
 1. Open the app in your browser (`http://localhost:5173`)
-2. Click **"Connect Wallet"**
+2. Click `Connect Wallet`
 3. Approve the connection in MetaMask or your preferred Web3 wallet
 
 ### Using the Bridge
@@ -174,10 +174,10 @@ This feature leverages:
 > This allows the `Delegation` contract to sponsor transactions for you.
 
 1. Navigate to the `/passkey_demo` page
-2. **Create Account**: Click to create a new account with passkey authentication
+2. Create Account: Click to create a new account with passkey authentication
    - You'll be prompted to use your device's biometric authentication
-3. **Mint Tokens**: Enter an amount and mint tokens using your passkey
-4. **Transfer Tokens**: Enter a recipient address and amount to transfer
+3. Mint Tokens: Enter an amount and mint tokens using your passkey
+4. Transfer Tokens: Enter a recipient address and amount to transfer
    - No gas fees required! Transactions are sponsored by the `Delegation` contract
 
 ## Debugging with Rex
