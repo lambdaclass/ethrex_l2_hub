@@ -7,7 +7,58 @@
   border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
+.spinner {
+  border: 4px solid rgba(255, 255, 255, 0.1);
+  border-top: 4px solid #4f46e5; /* Tailwind indigo-600 */
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
 body {
   background: radial-gradient(circle at top right, #c3ffe8, #e3f2fd, #ffffff);
   @apply min-h-screen font-sans text-gray-800;
+}
+
+.form--container {
+  @apply glass rounded-3xl p-8 shadow-lg flex flex-col items-center w-full max-w-md;
+}
+
+.form--fixed-input {
+  @apply flex items-center justify-between bg-gray-50 border border-gray-200 rounded-xl p-3;
+}
+
+.form-container > input {
+  @apply w-full border border-gray-300 rounded-xl p-3 focus:ring-2 focus:ring-indigo-500 focus:outline-none text-gray-800;
+}
+
+.form--header {
+  @apply text-2xl font-semibold text-gray-900;
+}
+
+.form--small-text {
+  @apply text-sm text-gray-600 text-center;
+}
+
+.form--label {
+  @apply block text-gray-700 text-sm;
+}
+
+.main-button {
+  @apply bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-3 rounded-xl transition-all shadow-md disabled:opacity-50;
+}
+
+.main-button--disabled {
+  @apply flex items-center justify-center gap-2 bg-indigo-100 text-indigo-400 font-medium py-3 px-6 rounded-xl w-full cursor-not-allowed;
+}
+
+.secondary-button {
+  @apply text-gray-600 hover:text-gray-800 text-sm underline;
 }
