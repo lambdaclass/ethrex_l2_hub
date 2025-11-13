@@ -12,11 +12,9 @@ A full-stack demonstration of **Ethrex L2**, showcasing a Layer 2 rollup solutio
 
 Before starting, ensure you have the following installed:
 
-<!-- Should we explain how to install each of these? --->
-
 - Node.js v21+ ([Download](https://nodejs.org/))
 - npm (comes with Node.js)
-- Solc - v0.8.28
+- Solc - v0.8.29
 - Rex - Utility tool for debugging and interacting with Ethereum. Install [here](https://github.com/lambdaclass/rex?tab=readme-ov-file#installing-the-cli)
 
 ## Setup and Deployment
