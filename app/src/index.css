@@ -1,1 +1,13 @@
 @import "tailwindcss";
+
+.glass {
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+body {
+  background: radial-gradient(circle at top right, #c3ffe8, #e3f2fd, #ffffff);
+  @apply min-h-screen font-sans text-gray-800;
+}
