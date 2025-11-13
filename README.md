@@ -31,6 +31,8 @@ git clone https://github.com/lambdaclass/ethrex.git && cd ethrex
 
 2. Checkout the branch required for this project
 
+<!--- FIXME: Remove this once https://github.com/lambdaclass/ethrex/pull/5339 is merged --->
+
 ```bash
 git checkout test_sponsor
 ```
