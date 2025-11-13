@@ -1,11 +1,10 @@
-import { privateKeyToAccount } from "viem/accounts";
 import {
   readContract,
   waitForTransactionReceipt,
   writeContract,
 } from "viem/actions";
-import Delegation from "../../../contracts/out/Delegation.sol/Delegation.json";
-import TestToken from "../../../contracts/out/TestToken.sol/TestToken.json";
+import Delegation from "../../abi/Delegation.json";
+import TestToken from "../../abi/TestToken.json";
 import {
   type TransactionReceipt,
   type Address,
