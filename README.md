@@ -28,13 +28,19 @@ Follow these steps to get the entire system running.
 1. Clone [ethrex](https://github.com/lambdaclass/ethrex)
 
 ```bash
-git clone https://github.com/lambdaclass/ethrex.git && cd ethrex/crates/l2
+git clone https://github.com/lambdaclass/ethrex.git && cd ethrex
 ```
 
 2. Checkout the branch required for this project
 
 ```bash
 git checkout test_sponsor
+```
+
+3. Build ethrex
+
+```bash
+export COMPILE_CONTRACTS=true && cargo build --bin ethrex --release --manifest-path Cargo.toml --features l2,l2-sql
 ```
 
 3. Start L1 and L2
@@ -45,22 +51,21 @@ This command will:
 - Deploy L1 contracts (Bridge, OnChainProposer, Verifier)
 - Start the L2 on port 1729
 
-<!-- TODO: Discuss if we want to use this target or maybe something like ethrex l2 --dev.
-With monitor or without monitor?
---->
+If you want to use the account abstraction feature, you need to create a txt file with the addresses of the contract you want to sponsor.
+You
 
 ```bash
-make restart
+target/release/ethrex l2 --dev --no-monitor --sponsorable-addresses <YOUR_SPONSORABLE_ADDRESSES_FILE>
 ```
 
 Wait for the chains to fully initialize. You should see logs indicating both L1 (port 8545) and L2 (port 1729) are running. The deployment will also fund test accounts with ETH.
 
 4. Initialize the Prover
 
-In a new terminal window, still in `ethrex/crates/l2`, run:
+In a new terminal window, run:
 
 ```bash
-make init-prover-exec
+./ethrex l2 prover --backend exec --proof-coordinators tcp://127.0.0.1:3900
 ```
 
 Keep this terminal running. The prover must stay active for the L2 to function properly. Without it, withdrawals cannot be finalized.
