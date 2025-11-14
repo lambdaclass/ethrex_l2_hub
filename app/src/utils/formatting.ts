@@ -1,6 +1,8 @@
 export function formatHash(
-  hash: `0x${string}` | undefined,
-): string | undefined {
-  if (!hash) return undefined;
-  return hash.slice(0, 6) + "..." + hash.slice(-4);
+  hash: `0x${string}` | null | undefined,
+  size?: number,
+): string | null | undefined {
+  let stringSize = size || 4;
+  if (!hash) return hash;
+  return hash.slice(0, stringSize + 2) + "..." + hash.slice(-stringSize);
 }

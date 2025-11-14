@@ -1,23 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { FaEthereum } from "react-icons/fa";
 import { BsClouds } from "react-icons/bs";
-import {
-  useAccount,
-  usePublicClient,
-  useSwitchChain,
-  useWaitForTransactionReceipt,
-  useBalance,
-} from "wagmi";
-import {
-  useClaimWithdraw,
-  useWatchWithdrawalInitiated,
-  useWithdraw,
-} from "../../hooks/withdraw";
-import { Address, formatEther, parseEther, PublicClient } from "viem";
-import {
-  getWithdrawalProof,
-  WithdrawalProof,
-} from "../../utils/customRpcMethods";
+import { useAccount, useBalance } from "wagmi";
+import { formatEther } from "viem";
 import { WithdrawModal } from "./Modal";
 import { useL2Chain } from "../../hooks/commons";
 

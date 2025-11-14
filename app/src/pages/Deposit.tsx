@@ -1,11 +1,10 @@
-import { useAccount, useSwitchChain } from "wagmi";
-import { Deposit } from "../components/Deposit";
-import { useEffect } from "react";
+import { useAccount } from "wagmi";
+import { DepositForm } from "../components/Deposit/Form";
 
 export const Bridge: React.FC = () => {
   const { isConnected, isDisconnected } = useAccount();
 
-  if (isConnected) return <Deposit />;
+  if (isConnected) return <DepositForm />;
 
   if (isDisconnected)
     return (

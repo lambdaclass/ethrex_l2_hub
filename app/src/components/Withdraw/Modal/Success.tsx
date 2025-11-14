@@ -61,6 +61,20 @@ export const Success: React.FC<SuccessProps> = ({
           </div>
 
           <div className="flex justify-between">
+            <span className="text-gray-600 text-sm">From</span>
+            <a href="#" className="text-indigo-600 hover:underline text-sm">
+              {formatHash(data.receipt.from)}
+            </a>
+          </div>
+
+          <div className="flex justify-between">
+            <span className="text-gray-600 text-sm">To</span>
+            <a href="#" className="text-indigo-600 hover:underline text-sm">
+              {formatHash(data.receipt.to)}
+            </a>
+          </div>
+
+          <div className="flex justify-between">
             <span className="text-gray-600 text-sm">Tx Hash</span>
             <a href="#" className="text-indigo-600 hover:underline text-sm">
               {formatHash(data.receipt.transactionHash)}
