@@ -4,6 +4,7 @@ import { Spinner } from "../../Spinner";
 import { parseEther } from "viem";
 import { useWithdraw, WithdrawStep } from "../../../hooks/withdraw";
 import { FaCheckCircle } from "react-icons/fa";
+import { storeClaim } from "../../../utils/claims";
 
 export type SubmissionModalProps = {
   onSuccess: (data: SuccessData) => void;
@@ -29,12 +30,19 @@ export const Submission: React.FC<SubmissionModalProps> = ({
 
     withdraw(parseEther(submissionData.amount))
       .then((data) => {
+        storeClaim({
+          address: data.receipt!.from,
+          transaction_hash: data.receipt!.transactionHash,
+          claimed: false,
+          amount: submissionData.amount,
+        });
+
         setTimeout(() => {
           onSuccess(data as SuccessData);
         }, 1000);
       })
       .catch(onFailure);
-  }, [withdraw, submissionData, onSuccess, onFailure]);
+  }, [withdraw]);
 
   return (
     <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">

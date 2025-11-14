@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useAccount } from "wagmi";
 
 import { ClaimData, ClaimItem } from "./ClaimItem";
+import { fetchClaims } from "../../utils/claims";
 
 export const Claims: React.FC = () => {
   const { address } = useAccount();
@@ -10,15 +11,19 @@ export const Claims: React.FC = () => {
   // Cargar claims del usuario
   const loadClaims = () => {
     if (!address) return;
-    const storage = JSON.parse(localStorage.getItem("withdrawalProofs") || "[]");
-    const filtered = storage.filter((p: ClaimData) => p.address === address);
-    setClaims(filtered);
+    const claims = fetchClaims(address);
+    setClaims(claims);
   };
 
   useEffect(() => {
     loadClaims();
-  }, [address]);
 
+    const interval = setInterval(() => {
+      loadClaims();
+    }, 5000);
+
+    return () => clearInterval(interval);
+  }, [address]);
 
   return (
     <section className="glass rounded-3xl p-8 shadow-lg w-4xl">
@@ -29,7 +34,7 @@ export const Claims: React.FC = () => {
       {claims.length > 0 ? (
         <div className="flex flex-col space-y-4">
           {claims.map((claim, index) => (
-            <ClaimItem index={index} claim={claim} />
+            <ClaimItem key={index} index={index} claim={claim} />
           ))}
         </div>
       ) : (

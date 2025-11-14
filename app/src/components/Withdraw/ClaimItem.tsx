@@ -1,6 +1,8 @@
-import { formatEther } from "viem";
+import { formatEther, parseEther } from "viem";
 import { useClaimProof, useClaimWithdraw } from "../../hooks/withdraw";
 import { useState } from "react";
+import { updateClaimStatus } from "../../utils/claims";
+import { formatBalance } from "../../utils/formatting";
 
 type ClaimItemProps = {
   index: number;
@@ -15,7 +17,9 @@ export type ClaimData = {
 };
 
 export const ClaimItem: React.FC<ClaimItemProps> = ({ index, claim }) => {
-  const { proof, isLoading: proofIsLoading } = useClaimProof(claim.transaction_hash);
+  const { proof, isLoading: proofIsLoading } = useClaimProof(
+    claim.transaction_hash,
+  );
   const { claimWithdraw } = useClaimWithdraw();
 
   const [isClaiming, setIsClaiming] = useState<boolean>(false);
@@ -29,15 +33,9 @@ export const ClaimItem: React.FC<ClaimItemProps> = ({ index, claim }) => {
     setClaimStatus("Claiming funds...");
 
     try {
-      await claimWithdraw(BigInt(claim.amount), proof);
+      await claimWithdraw(parseEther(claim.amount), proof);
 
-      const stored = JSON.parse(localStorage.getItem("withdrawalProofs") || "[]");
-      const updated = stored.map((p: ClaimData) =>
-        p.transaction_hash === claim.transaction_hash
-          ? { ...p, claimed: true }
-          : p
-      );
-      localStorage.setItem("withdrawalProofs", JSON.stringify(updated));
+      updateClaimStatus(claim.transaction_hash, true);
 
       setClaimed(true);
       setClaimStatus("Funds claimed successfully!");
@@ -55,7 +53,7 @@ export const ClaimItem: React.FC<ClaimItemProps> = ({ index, claim }) => {
         <p className="text-gray-800 font-medium">Withdrawal #{index + 1}</p>
 
         <p className="text-sm text-gray-600">
-          {Number(formatEther(BigInt(claim.amount)))} ETH
+          {formatBalance(parseEther(claim.amount))} ETH
         </p>
 
         <div className="text-xs text-gray-500 mt-1 space-y-1">
@@ -64,11 +62,7 @@ export const ClaimItem: React.FC<ClaimItemProps> = ({ index, claim }) => {
             <span className="text-indigo-600">{claim.transaction_hash}</span>
           </p>
 
-          {claimStatus && (
-            <p className="text-gray-500 mt-1">
-              {claimStatus}
-            </p>
-          )}
+          {claimStatus && <p className="text-gray-500 mt-1">{claimStatus}</p>}
         </div>
       </div>
 
@@ -93,8 +87,8 @@ export const ClaimItem: React.FC<ClaimItemProps> = ({ index, claim }) => {
               {proofIsLoading
                 ? "Waiting for proof..."
                 : isClaiming
-                ? "Claiming..."
-                : "Claim"}
+                  ? "Claiming..."
+                  : "Claim"}
             </button>
           </>
         )}
