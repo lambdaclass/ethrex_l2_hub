@@ -18,6 +18,6 @@ COPY . .
 EXPOSE 3000
 
 # Build and start the app
-# TODO: change this so that the app can read the environment variables
+# TODO: change this so that the app can replace the environment variables at runtime
 # without the need to build the app every time
 ENTRYPOINT ["npm", "run", "prod"]
