@@ -11,8 +11,8 @@ export const Withdraw: React.FC = () => {
   const [withdrawnAmount, setWithdrawnAmount] = useState<bigint>(0n);
   const { data, isPending, isSuccess, withdraw } = useWithdraw({ amount: parseEther(amount) })
   const [proof, setProof] = useState<WithdrawalProof | null>(null);
-  const { data: dataClaim, isPending: isPendingCLaim, isSuccess: isSuccessClaim, claimWithdraw } = useClaimWithdraw({ amount: withdrawnAmount, proof: proof as WithdrawalProof });
-  const { data: dataReceipt, isLoading, isSuccess: isTxReciptSuccess, error } = useWaitForTransactionReceipt({ hash: dataClaim })
+  const { data: dataClaim, isPending: _isPendingCLaim, isSuccess: _isSuccessClaim, claimWithdraw } = useClaimWithdraw({ amount: withdrawnAmount, proof: proof as WithdrawalProof });
+  const { data: _dataReceipt, isLoading: _isLoading, isSuccess: isTxReciptSuccess, error: _error } = useWaitForTransactionReceipt({ hash: dataClaim })
   const client = usePublicClient()
   const { switchChain, switchChainAsync } = useSwitchChain()
 

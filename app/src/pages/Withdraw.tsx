@@ -1,6 +1,5 @@
-import { useAccount, useSwitchChain } from "wagmi"
+import { useAccount } from "wagmi"
 import { Withdraw } from "../components/Withdraw"
-import { useEffect } from "react"
 
 export const Bridge: React.FC = () => {
   const { isConnected, isDisconnected } = useAccount()

@@ -17,7 +17,7 @@ client.request = async ({ method, params }) => {
     method = "ethrex_sendTransaction";
   }
 
-  return base_request({ method, params });
+  return base_request({ method: method as any, params: params as any });
 };
 
 export type Client = typeof client;
