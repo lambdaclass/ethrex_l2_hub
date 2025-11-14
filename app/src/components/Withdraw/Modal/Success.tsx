@@ -1,19 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { SuccessData } from "../Modal";
 import { formatHash } from "../../../utils/formatting";
-import { formatEther, PublicClient } from "viem";
+import { formatEther } from "viem";
 import { Spinner } from "../../Spinner";
-import { useAccount, usePublicClient } from "wagmi";
-import {
-  getWithdrawalProof,
-  WithdrawalProof,
-} from "../../../utils/customRpcMethods";
-import {
-  useClaimProof,
-  useClaimWithdraw,
-  useClaimWithdraw2,
-  useWatchWithdrawalInitiated,
-} from "../../../hooks/withdraw";
+import { useClaimProof, useClaimWithdraw2 } from "../../../hooks/withdraw";
 
 export type SuccessProps = {
   closeModal: () => void;

@@ -1,5 +1,4 @@
 import {
-  useAccount,
   usePublicClient,
   useWalletClient,
   useWatchContractEvent,
@@ -7,9 +6,9 @@ import {
 } from "wagmi";
 import CommonBridgeL1Abi from "../../abi/CommonBridgeL1.json";
 import CommonBridgeL2Abi from "../../abi/CommonBridgeL2.json";
-import { Address, Log, parseEther, PublicClient } from "viem";
+import { Address, Log, PublicClient } from "viem";
 import { getWithdrawalProof, WithdrawalProof } from "../utils/customRpcMethods";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { waitForTransactionReceipt } from "viem/actions";
 import { FailureData, SuccessData } from "../components/Withdraw/Modal";
 
@@ -105,39 +104,33 @@ export const useWatchWithdrawalInitiated = ({
 };
 
 export const useClaimProof = (txHash: `0x${string}`) => {
-  const { address } = useAccount();
-  const client = usePublicClient({
-    chainId: Number(import.meta.env.VITE_L2_CHAIN_ID),
-  });
+  const client = usePublicClient();
   const [proof, setProof] = useState<WithdrawalProof | undefined>();
 
   const waitWithdrawalProof = async (
     client: PublicClient,
     txHash: `0x${string}`,
-  ) => {
+  ): Promise<WithdrawalProof> => {
     try {
-      console.log("Attempting to fetch withdrawal proof...");
-      const proof = await getWithdrawalProof(client, txHash);
-      console.log("Fetched withdrawal proof:", proof);
-      setProof(proof);
+      const result = await getWithdrawalProof(client, txHash);
+      console.log("Fetched withdrawal proof:", result);
+      return result;
     } catch (error) {
       console.log(
         "Withdrawal proof not available yet, retrying in 5 seconds...",
       );
-      setTimeout(() => waitWithdrawalProof(client, txHash), 5000);
+      await new Promise((resolve) => setTimeout(resolve, 5000)); // Wait for 5 seconds before retrying
+      const result = await waitWithdrawalProof(client, txHash);
+      return result;
     }
   };
 
-  useWatchWithdrawalInitiated({
-    onLogs: (_logs) => {
-      console.log("WithdrawalInitiated event detected in watcher.");
-      if (client) {
-        console.log("WithdrawalInitiated event detected, fetching proof...");
-        waitWithdrawalProof(client, txHash);
-      }
-    },
-    args: { senderOnL2: address, receiverOnL1: address },
-  });
+  useEffect(() => {
+    console.log("Client:", client);
+    console.log("TxHash:", txHash);
+    if (!client) return;
+    waitWithdrawalProof(client, txHash).then(setProof);
+  }, [client, txHash]);
 
   return { proof, isLoading: !proof };
 };
