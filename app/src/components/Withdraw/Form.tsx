@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FaEthereum } from "react-icons/fa";
 import { BsClouds } from "react-icons/bs";
 import { useAccount, useBalance } from "wagmi";
@@ -9,9 +9,19 @@ import { useL2Chain } from "../../hooks/commons";
 export const WithdrawForm: React.FC = () => {
   useL2Chain();
   const { address } = useAccount();
-  const { data: balanceData } = useBalance({ address });
+  const { data: balanceData, refetch: refetchBalance } = useBalance({
+    address,
+  });
   const [modalIsOpen, setModalIsOpen] = useState<boolean>(false);
   const [amount, setAmount] = useState<string>("");
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      refetchBalance();
+    }, 5000);
+
+    return () => clearInterval(interval);
+  }, []);
 
   const openModal = () => {
     setModalIsOpen(true);

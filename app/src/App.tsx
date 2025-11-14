@@ -1,21 +1,25 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { Header } from "./components/Header";
-import { AccountAbstraction } from "./pages/AccountAbstraction";
-import { DepositForm } from "./components/Deposit/Form";
-import { Withdraw } from "./components/Withdraw";
 import { Footer } from "./components/Footer";
+import { AddressContext } from "./components/AddressContext";
+import { Home } from "./pages/Home";
+import { Deposit } from "./pages/Deposit";
+import { Withdraw } from "./pages/Withdraw";
+import { AccountAbstraction } from "./pages/AccountAbstraction";
 
 const App: React.FC = () => (
   <div className="min-h-screen flex flex-col items-center justify-center">
     <Router>
       <Header />
 
-      <Routes>
-        <Route path="/" element={<>Welcome</>} />
-        <Route path="/bridge/deposit" element={<DepositForm />} />
-        <Route path="/bridge/withdraw" element={<Withdraw />} />
-        <Route path="/passkey_demo" element={<AccountAbstraction />} />
-      </Routes>
+      <AddressContext>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/bridge/deposit" element={<Deposit />} />
+          <Route path="/bridge/withdraw" element={<Withdraw />} />
+          <Route path="/passkey_demo" element={<AccountAbstraction />} />
+        </Routes>
+      </AddressContext>
 
       <Footer />
     </Router>

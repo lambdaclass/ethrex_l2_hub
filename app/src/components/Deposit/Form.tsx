@@ -1,22 +1,19 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { formatEther } from "viem";
-import { useAccount, useBalance, useSwitchChain } from "wagmi";
+import { useAccount, useBalance } from "wagmi";
 import { FaEthereum } from "react-icons/fa";
 import { BsClouds } from "react-icons/bs";
 import { DepositModal } from "./Modal";
+import { useL1Chain } from "../../hooks/commons";
 
 export const DepositForm: React.FC = () => {
+  useL1Chain();
   const [amount, setAmount] = useState<string>("");
   const [showModal, setShowModal] = useState(false);
   const { address } = useAccount();
-  const { switchChain } = useSwitchChain();
   const { data: balanceData, refetch: refetchBalance } = useBalance({
     address,
   });
-
-  useEffect(() => {
-    switchChain({ chainId: Number(import.meta.env.VITE_L1_CHAIN_ID) });
-  }, []);
 
   return (
     <div>
