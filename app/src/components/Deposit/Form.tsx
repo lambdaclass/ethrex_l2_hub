@@ -10,7 +10,7 @@ export const DepositForm: React.FC = () => {
   const [showModal, setShowModal] = useState(false);
   const { address} = useAccount()
   const { switchChain } = useSwitchChain()
-  const { data: balanceData } = useBalance({ address });
+  const { data: balanceData, refetch: refetchBalance } = useBalance({ address });
 
   useEffect(() => {
     switchChain({ chainId: Number(import.meta.env.VITE_L1_CHAIN_ID) })
@@ -61,9 +61,9 @@ export const DepositForm: React.FC = () => {
       </div>
     </div>
     {showModal && 
-        <DepositModal submissionData={{ amount: amount }} closeModal={() => {
-      setShowModal(false);
-      setAmount("");
+        <DepositModal submissionData={{ amount: amount }}  refetchBalance={refetchBalance} closeModal={() => {
+        setShowModal(false);
+        setAmount("");
     }}  />}
     </div>
   )

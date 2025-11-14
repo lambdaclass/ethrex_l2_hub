@@ -11,11 +11,13 @@ export type SubmissionData = {
 export type DepositModalProps = {
   submissionData: SubmissionData;
   closeModal: () => void;
+  refetchBalance: () => void;
 };
 
 export const DepositModal: React.FC<DepositModalProps> = ({
   submissionData,
   closeModal,
+  refetchBalance
 }: DepositModalProps) => {
 
   const [successData, setSuccessData] = useState<SuccessData | undefined>();
@@ -23,6 +25,7 @@ export const DepositModal: React.FC<DepositModalProps> = ({
 
   const onSuccess = (data: SuccessData) => {
     setSuccessData(data);
+    refetchBalance()
   };
   const onFailure = (data: FailureData) => {
     setFailureData(data);
