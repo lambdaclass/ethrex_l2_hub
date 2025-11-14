@@ -15,21 +15,9 @@ RUN npm install
 # Copy the project files into the working directory
 COPY . .
 
-# Build the React app for production
-RUN npm run build
-
-
-# Use the official NGINX image for production
-FROM nginx:stable-alpine AS production
-
-# copy nginx configuration in side conf.d folder
-COPY --from=build /usr/src/app/nginx.conf /etc/nginx/conf.d
-
-# Copy the build output from the dist folder into the Nginx html directory
-COPY --from=build /usr/src/app/dist /usr/share/nginx/html
-
-# Expose port 3000 to allow access to the app
 EXPOSE 3000
 
-# Run Nginx in the foreground
-ENTRYPOINT ["nginx", "-g", "daemon off;"] 
+# Build and start the app
+# TODO: change this so that the app can read the environment variables
+# without the need to build the app every time
+ENTRYPOINT ["npm", "run", "prod"]
