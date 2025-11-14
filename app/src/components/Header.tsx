@@ -4,7 +4,7 @@ import { formatHash } from "../utils/formatting";
 import { FaWallet } from "react-icons/fa";
 
 export const Header: React.FC = () => (
-  <header className="w-full flex justify-between items-center px-10 py-6">
+  <header className="w-full flex justify-between items-center px-10 py-5">
     {/* Left side - Logo */}
     <div className="flex items-center gap-8">
       <h1 className="text-2xl font-bold text-gray-900">

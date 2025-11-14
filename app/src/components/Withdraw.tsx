@@ -1,65 +1,32 @@
 import { useEffect, useState } from "react";
 import { Address, parseEther, PublicClient } from "viem";
-import { useAccount, usePublicClient, useSwitchChain, useWaitForTransactionReceipt } from 'wagmi'
-import { useWithdraw, useWatchWithdrawalInitiated, useClaimWithdraw } from "../hooks/withdraw";
+import {
+  useAccount,
+  usePublicClient,
+  useSwitchChain,
+  useWaitForTransactionReceipt,
+} from "wagmi";
+import {
+  useWithdraw,
+  useWatchWithdrawalInitiated,
+  useClaimWithdraw,
+} from "../hooks/withdraw";
 import { getWithdrawalProof, WithdrawalProof } from "../utils/customRpcMethods";
 import { Loading } from "./Loading";
+import { WithdrawForm } from "../components/Withdraw/Form";
 
 export const Withdraw: React.FC = () => {
-  const { address } = useAccount()
-  const [amount, setAmount] = useState<string>("");
-  const [withdrawnAmount, setWithdrawnAmount] = useState<bigint>(0n);
-  const { data, isPending, isSuccess, withdraw } = useWithdraw({ amount: parseEther(amount) })
-  const [proof, setProof] = useState<WithdrawalProof | null>(null);
-  const { data: dataClaim, isPending: isPendingCLaim, isSuccess: isSuccessClaim, claimWithdraw } = useClaimWithdraw({ amount: withdrawnAmount, proof: proof as WithdrawalProof });
-  const { data: dataReceipt, isLoading, isSuccess: isTxReciptSuccess, error } = useWaitForTransactionReceipt({ hash: dataClaim })
-  const client = usePublicClient()
-  const { switchChain, switchChainAsync } = useSwitchChain()
+  const { switchChain } = useSwitchChain();
 
   useEffect(() => {
-    switchChain({ chainId: Number(import.meta.env.VITE_L2_CHAIN_ID) })
-  }, [])
+    switchChain({ chainId: Number(import.meta.env.VITE_L2_CHAIN_ID) });
+  }, []);
 
-  const waitWithdrawalProof = async (client: PublicClient, txHash: Address) => {
-    try {
-      const receipt = await client.getTransactionReceipt({ hash: txHash });
-
-      // Find the WithdrawalInitiated event log
-      const withdrawalLog = receipt.logs.find(log =>
-        log.address.toLowerCase() === import.meta.env.VITE_L2_BRIDGE_ADDRESS.toLowerCase()
-      );
-
-      if (withdrawalLog && withdrawalLog.topics.length >= 4 && withdrawalLog.topics[3]) {
-        // The amount is in topics[3] (indexed parameter)
-        const amountFromLog = BigInt(withdrawalLog.topics[3]);
-        setWithdrawnAmount(amountFromLog);
-      }
-
-      const proof = await getWithdrawalProof(client, txHash);
-      setProof(proof);
-    } catch (error) {
-      setTimeout(() => waitWithdrawalProof(client, txHash), 5000);
-    }
-  }
-
-  useWatchWithdrawalInitiated({
-    onLogs: (_logs) => {
-      if (client && data) {
-        waitWithdrawalProof(client, data);
-      }
-    },
-    args: { senderOnL2: address, receiverOnL1: address }
-  })
-
-
-  const claimWithdrawClick = async () => {
-    try {
-      await switchChainAsync({ chainId: Number(import.meta.env.VITE_L1_CHAIN_ID) });
-      claimWithdraw();
-    } catch (error) {
-      console.error("Error claiming withdrawal:", error);
-    }
-  }
+  return (
+    <div className="w-full flex justify-center items-center">
+      <WithdrawForm />
+    </div>
+  );
 
   return (
     <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
@@ -77,12 +44,16 @@ export const Withdraw: React.FC = () => {
           disabled={isPending || isSuccess}
           className="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 transition duration-200 disabled:bg-blue-300"
         >
-          {isPending ? "Waiting for wallet confirmation..." : "Start withdrawal Process"}
+          {isPending
+            ? "Waiting for wallet confirmation..."
+            : "Start withdrawal Process"}
         </button>
-        {isSuccess &&
+        {isSuccess && (
           <>
             <div className="p-4 bg-green-50 border border-green-200 rounded-md">
-              <h3 className="text-lg font-semibold text-green-800">Transaction Successful!</h3>
+              <h3 className="text-lg font-semibold text-green-800">
+                Transaction Successful!
+              </h3>
               <p className="text-sm text-green-700 mt-2">
                 Transaction Hash:{" "}
                 <span className="font-mono break-all">{data}</span>
@@ -94,19 +65,28 @@ export const Withdraw: React.FC = () => {
               disabled={!proof}
               className="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 transition duration-200 disabled:bg-blue-300 items-center text-center"
             >
-              {proof ? "Claim Withdrawal" : <><Loading /> Waiting for claming to be ready</>}
+              {proof ? (
+                "Claim Withdrawal"
+              ) : (
+                <>
+                  <Loading /> Waiting for claming to be ready
+                </>
+              )}
             </button>
-            {isTxReciptSuccess &&
+            {isTxReciptSuccess && (
               <div className="p-4 bg-green-50 border border-green-200 rounded-md">
-                <h3 className="text-lg font-semibold text-green-800">Claim ready!</h3>
+                <h3 className="text-lg font-semibold text-green-800">
+                  Claim ready!
+                </h3>
                 <p className="text-sm text-green-700 mt-2">
                   Transaction Hash:{" "}
                   <span className="font-mono break-all">{dataClaim}</span>
                 </p>
-              </div>}
+              </div>
+            )}
           </>
-        }
+        )}
       </div>
     </div>
-  )
-}
+  );
+};
