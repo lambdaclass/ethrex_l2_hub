@@ -19,7 +19,7 @@ export const DepositForm: React.FC = () => {
   }, []);
 
   return (
-    <div>
+    <div className="flex flex-col items-center justify-center w-full mt-8 gap-10 px-4 lg:px-0">
       <div className="form--container glass">
         <h2 className="form--header">Deposit Funds</h2>
         <div className="form--small-text text-center">

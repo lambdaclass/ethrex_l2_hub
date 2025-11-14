@@ -1,9 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { SuccessData } from "../Modal";
 import { formatHash } from "../../../utils/formatting";
 import { formatEther } from "viem";
 import { Spinner } from "../../Spinner";
 import { useClaimProof, useClaimWithdraw } from "../../../hooks/withdraw";
+import { useAccount } from "wagmi";
+import { ClaimData } from "../ClaimItem";
 
 export type SuccessProps = {
   closeModal: () => void;
@@ -15,12 +17,43 @@ export const Success: React.FC<SuccessProps> = ({
   data,
 }: SuccessProps) => {
   const { claimWithdraw } = useClaimWithdraw();
+  const { address }= useAccount();
   const { proof, isLoading: proofIsLoading } = useClaimProof(
     data.receipt.transactionHash,
   );
   const [claimed, setClaimed] = useState<boolean>(false);
   const [isClaiming, setIsClaiming] = useState<boolean>(false);
   const [claimStatus, setClaimStatus] = useState<string | undefined>();
+
+useEffect(() => {
+  const txHash = data.receipt.transactionHash;
+  const existing = JSON.parse(localStorage.getItem("withdrawalProofs") || "[]");
+  const index = existing.findIndex(
+    (item: ClaimData) => item.transaction_hash === txHash
+  );
+
+  if (index !== -1) {
+    existing[index].claimed = claimed;
+  } else {
+    existing.push({
+      claimed,
+      address: address,
+      amount: data.amount.toString(),
+      transaction_hash: txHash,
+    });
+  }
+
+  localStorage.setItem("withdrawalProofs", JSON.stringify(existing));
+}, [
+  proof,
+  proofIsLoading,
+  claimed,
+  claimStatus,
+  data?.receipt?.transactionHash,
+  data?.amount,
+  address
+]);
+
 
   const onClick = async () => {
     if (!proof || !claimWithdraw) return;
@@ -32,7 +65,8 @@ export const Success: React.FC<SuccessProps> = ({
       await claimWithdraw(data.amount, proof);
       setClaimStatus("Funds claimed successfully!");
       setClaimed(true);
-    } catch (_error) {
+    } catch (error) {
+      console.log(error)
       setClaimStatus("Unable to claim funds. Please try again later.");
     } finally {
       setIsClaiming(false);

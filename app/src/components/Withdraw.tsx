@@ -14,6 +14,7 @@ import {
 import { getWithdrawalProof, WithdrawalProof } from "../utils/customRpcMethods";
 import { Loading } from "./Loading";
 import { WithdrawForm } from "../components/Withdraw/Form";
+import { Claims } from "./Withdraw/Claims";
 
 export const Withdraw: React.FC = () => {
   const { switchChain } = useSwitchChain();
@@ -23,8 +24,11 @@ export const Withdraw: React.FC = () => {
   }, []);
 
   return (
-    <div className="w-full flex justify-center items-center">
-      <WithdrawForm />
+    <div>
+      <div className="flex flex-col items-center justify-center w-full mt-8 gap-10 px-4 lg:px-0">
+        <WithdrawForm />
+        <Claims />
+      </div>
     </div>
   );
 

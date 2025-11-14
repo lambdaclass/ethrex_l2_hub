@@ -6,7 +6,7 @@ import { Withdraw } from "./components/Withdraw";
 import { Footer } from "./components/Footer";
 
 const App: React.FC = () => (
-  <div className="min-h-screen flex flex-col items-center justify-center">
+  <div className="min-h-screen flex flex-col">
     <Router>
       <Header />
 
