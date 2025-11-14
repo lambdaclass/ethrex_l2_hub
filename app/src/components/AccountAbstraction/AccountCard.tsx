@@ -1,5 +1,5 @@
 import { useState } from "react";
-import Loading from "../Loading";
+import { Loading } from "../Loading";
 import { login, signUp } from "../../utils/passkeyAccounts";
 import { type TransactionReceipt, type Address } from "viem";
 import { type CreateCredentialReturnType } from "webauthn-p256";

@@ -1,7 +1,7 @@
 import { transferToken } from "../../utils/token";
 import { type Address, type TransactionReceipt } from "viem";
 import { useState } from "react";
-import Loading from "../Loading";
+import { Loading } from "../Loading";
 import { client } from "../../config/passkey_config";
 
 export default function TransferCard({
