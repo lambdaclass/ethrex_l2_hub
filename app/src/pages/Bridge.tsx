@@ -1,5 +1,5 @@
 import { useAccount } from "wagmi"
-import { Deposit } from "../components/Deposit"
+import { Deposit } from "../components/Deposit/Deposit"
 import { Withdraw } from "../components/Withdraw"
 
 export const Bridge: React.FC = () => {
