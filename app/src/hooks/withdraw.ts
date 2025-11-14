@@ -1,9 +1,4 @@
-import {
-  usePublicClient,
-  useWalletClient,
-  useWatchContractEvent,
-  useWriteContract,
-} from "wagmi";
+import { usePublicClient, useWalletClient, useWatchContractEvent } from "wagmi";
 import CommonBridgeL1Abi from "../../abi/CommonBridgeL1.json";
 import CommonBridgeL2Abi from "../../abi/CommonBridgeL2.json";
 import { Address, Log, PublicClient } from "viem";
@@ -24,42 +19,20 @@ const commondPropsL1 = {
   chainId: Number(import.meta.env.VITE_L1_CHAIN_ID),
 };
 
-export type WithdrawalInitiatedProps = {
-  onLogs: (logs: Log[]) => void;
-  args?: {
-    receiverOnL1?: Address;
-    senderOnL2?: Address;
-    amount?: bigint;
-  };
-};
-
-export const useClaimWithdraw = ({
-  amount,
-  proof,
-}: {
-  amount: bigint;
-  proof: WithdrawalProof;
-}) => {
-  const { writeContract, ...useWriteContractValues } = useWriteContract();
-
-  const claimWithdraw = () =>
-    writeContract({
-      ...commondPropsL1,
-      functionName: "claimWithdrawal",
-      args: [amount, proof.batch_number, proof.index, proof.merkle_proof],
-    });
-
-  return { claimWithdraw, ...useWriteContractValues };
-};
-
-export const useClaimWithdraw2 = () => {
-  const { data: client } = useWalletClient();
+export const useClaimWithdraw = () => {
+  const { data: client } = useWalletClient({
+    chainId: Number(import.meta.env.VITE_L1_CHAIN_ID),
+  });
 
   const claimWithdraw = useCallback(
     async (amount: bigint, proof: WithdrawalProof) => {
       if (!client) throw new Error("Wallet client not available");
 
       try {
+        await client.switchChain({
+          id: Number(import.meta.env.VITE_L1_CHAIN_ID),
+        });
+
         const txHash = await client.writeContract({
           ...commondPropsL1,
           functionName: "claimWithdrawal",
@@ -82,25 +55,15 @@ export const useClaimWithdraw2 = () => {
           message:
             error["message"] || "An unknown error occurred during withdrawal.",
         };
+      } finally {
+        await client.switchChain({
+          id: Number(import.meta.env.VITE_L2_CHAIN_ID),
+        });
       }
     },
     [client],
   );
   return { claimWithdraw: !client ? undefined : claimWithdraw };
-};
-
-export const useWatchWithdrawalInitiated = ({
-  onLogs,
-  args,
-}: WithdrawalInitiatedProps) => {
-  return useWatchContractEvent({
-    ...commondPropsL2,
-    eventName: "WithdrawalInitiated",
-    poll: true,
-    pollingInterval: 1000,
-    args,
-    onLogs,
-  });
 };
 
 export const useClaimProof = (txHash: `0x${string}`) => {
@@ -113,7 +76,6 @@ export const useClaimProof = (txHash: `0x${string}`) => {
   ): Promise<WithdrawalProof> => {
     try {
       const result = await getWithdrawalProof(client, txHash);
-      console.log("Fetched withdrawal proof:", result);
       return result;
     } catch (error) {
       console.log(
@@ -126,8 +88,6 @@ export const useClaimProof = (txHash: `0x${string}`) => {
   };
 
   useEffect(() => {
-    console.log("Client:", client);
-    console.log("TxHash:", txHash);
     if (!client) return;
     waitWithdrawalProof(client, txHash).then(setProof);
   }, [client, txHash]);

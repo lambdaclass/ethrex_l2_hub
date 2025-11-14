@@ -20,7 +20,10 @@ export const Failure: React.FC<FailureProps> = ({ data, closeModal }) => {
         </p>
 
         <div className="bg-white/70 rounded-xl p-4 text-left space-y-3">
-          <p className="text-red-700 text-center">{data.message}</p>
+          <p className="text-gray-600 text-sm text-center">Error message </p>
+          <p className="text-red-700 max-h-20 overflow-y-auto break-all p-1 rounded-lg">
+            {data.message}
+          </p>
 
           <div className="flex justify-between">
             <span className="text-gray-600 text-sm">Amount</span>

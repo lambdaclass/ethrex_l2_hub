@@ -1,23 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { FailureData, SubmissionData, SuccessData } from "../Modal";
 import { Spinner } from "../../Spinner";
-import { parseEther, PublicClient, Address } from "viem";
-import {
-  useSwitchChain,
-  useWaitForTransactionReceipt,
-  usePublicClient,
-  useAccount,
-} from "wagmi";
-import {
-  useWithdraw,
-  useClaimWithdraw,
-  useWatchWithdrawalInitiated,
-  WithdrawStep,
-} from "../../../hooks/withdraw";
-import {
-  WithdrawalProof,
-  getWithdrawalProof,
-} from "../../../utils/customRpcMethods";
+import { parseEther } from "viem";
+import { useWithdraw, WithdrawStep } from "../../../hooks/withdraw";
 import { FaCheckCircle } from "react-icons/fa";
 
 export type SubmissionModalProps = {
@@ -33,77 +18,6 @@ export const Submission: React.FC<SubmissionModalProps> = ({
   submissionData,
 }: SubmissionModalProps) => {
   const { withdraw, step } = useWithdraw();
-  // const { address } = useAccount();
-  // const { switchChainAsync } = useSwitchChain();
-  // const [withdrawnAmount, setWithdrawnAmount] = useState<bigint>(0n);
-  // const { data, isPending, isSuccess, withdraw } = useWithdraw({
-  //   amount: parseEther(submissionData.amount),
-  // });
-  // const [proof, setProof] = useState<WithdrawalProof | null>(null);
-  // const {
-  //   data: dataClaim,
-  //   isPending: isPendingCLaim,
-  //   isSuccess: isSuccessClaim,
-  //   claimWithdraw,
-  // } = useClaimWithdraw({
-  //   amount: withdrawnAmount,
-  //   proof: proof as WithdrawalProof,
-  // });
-  // const {
-  //   data: dataReceipt,
-  //   isLoading,
-  //   isSuccess: isTxReciptSuccess,
-  //   error,
-  // } = useWaitForTransactionReceipt({ hash: dataClaim });
-  // const client = usePublicClient();
-
-  // const waitWithdrawalProof = async (client: PublicClient, txHash: Address) => {
-  //   try {
-  //     const receipt = await client.getTransactionReceipt({ hash: txHash });
-
-  //     // Find the WithdrawalInitiated event log
-  //     const withdrawalLog = receipt.logs.find(
-  //       (log) =>
-  //         log.address.toLowerCase() ===
-  //         import.meta.env.VITE_L2_BRIDGE_ADDRESS.toLowerCase(),
-  //     );
-
-  //     if (
-  //       withdrawalLog &&
-  //       withdrawalLog.topics.length >= 4 &&
-  //       withdrawalLog.topics[3]
-  //     ) {
-  //       // The amount is in topics[3] (indexed parameter)
-  //       const amountFromLog = BigInt(withdrawalLog.topics[3]);
-  //       setWithdrawnAmount(amountFromLog);
-  //     }
-
-  //     const proof = await getWithdrawalProof(client, txHash);
-  //     setProof(proof);
-  //   } catch (error) {
-  //     setTimeout(() => waitWithdrawalProof(client, txHash), 5000);
-  //   }
-  // };
-
-  // useWatchWithdrawalInitiated({
-  //   onLogs: (_logs) => {
-  //     if (client && data) {
-  //       waitWithdrawalProof(client, data);
-  //     }
-  //   },
-  //   args: { senderOnL2: address, receiverOnL1: address },
-  // });
-
-  // const claimWithdrawClick = async () => {
-  //   try {
-  //     await switchChainAsync({
-  //       chainId: Number(import.meta.env.VITE_L1_CHAIN_ID),
-  //     });
-  //     claimWithdraw();
-  //   } catch (error) {
-  //     console.error("Error claiming withdrawal:", error);
-  //   }
-  // };
 
   function loadingIcon(loadingSteps: WithdrawStep[]) {
     if (loadingSteps.includes(step)) return <Spinner className="w-6 h-6" />;
