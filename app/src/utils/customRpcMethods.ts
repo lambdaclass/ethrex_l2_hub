@@ -16,16 +16,18 @@ type L1MessageProof = {
 
 export async function getWithdrawalProof(
   client: PublicClient,
-  txHash: `0x${string}`,
+  txHash: `0x${string}`
 ): Promise<WithdrawalProof> {
   const result = (await client.request({
     method: "ethrex_getMessageProof" as any,
     params: [txHash],
   })) as L1MessageProof[];
 
+  console.log("Result Message Proof:", result);
+
   if (!result || result.length === 0) {
     throw new Error(
-      "No withdrawal proof found for the given transaction hash yet",
+      "No withdrawal proof found for the given transaction hash yet"
     );
   }
 

@@ -2,9 +2,9 @@ import React, { useEffect, useState } from "react";
 import { FaEthereum } from "react-icons/fa";
 import { BsClouds } from "react-icons/bs";
 import { useAccount, useBalance } from "wagmi";
-import { formatEther } from "viem";
 import { WithdrawModal } from "./Modal";
 import { useL2Chain } from "../../hooks/commons";
+import { formatBalance } from "../../utils/formatting";
 
 export const WithdrawForm: React.FC = () => {
   useL2Chain();
@@ -68,7 +68,7 @@ export const WithdrawForm: React.FC = () => {
               onChange={(e) => setAmount(e.target.value)}
             />
             <div className="form--small-text text-right mt-1">
-              Balance: {balanceData ? formatEther(balanceData.value) : "-"} ETH
+              Balance: {formatBalance(balanceData?.value)} ETH
             </div>
           </div>
 

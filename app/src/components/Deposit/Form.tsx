@@ -1,10 +1,10 @@
 import { useState } from "react";
-import { formatEther } from "viem";
 import { useAccount, useBalance } from "wagmi";
 import { FaEthereum } from "react-icons/fa";
 import { BsClouds } from "react-icons/bs";
 import { DepositModal } from "./Modal";
 import { useL1Chain } from "../../hooks/commons";
+import { formatBalance } from "../../utils/formatting";
 
 export const DepositForm: React.FC = () => {
   useL1Chain();
@@ -16,7 +16,7 @@ export const DepositForm: React.FC = () => {
   });
 
   return (
-    <div>
+    <div className="flex flex-col items-center justify-center w-full mt-8 gap-10 px-4 lg:px-0">
       <div className="form--container glass">
         <h2 className="form--header">Deposit Funds</h2>
         <div className="form--small-text text-center">
@@ -49,7 +49,7 @@ export const DepositForm: React.FC = () => {
               min={0}
             />
             <div className="mt-1 form--small-text text-right">
-              Balance: {balanceData ? formatEther(balanceData.value) : "-"} ETH
+              Balance: {formatBalance(balanceData?.value)} ETH
             </div>
           </div>
           <button onClick={() => setShowModal(true)} className="main-button">
