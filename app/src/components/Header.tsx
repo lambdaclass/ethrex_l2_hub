@@ -6,7 +6,7 @@ export const Header: React.FC = () =>
   <header className="bg-white shadow p-4 flex justify-between items-center">
     {/* Left side - Logo */}
     <div className="flex items-center space-x-8">
-      <h1 className="text-2xl font-bold text-gray-800">EthRex Hub</h1>
+      <h1 className="text-2xl font-bold text-gray-800">ethrex Hub</h1>
       <nav className="flex space-x-4">
         <Link
           to="/bridge/withdraw"
