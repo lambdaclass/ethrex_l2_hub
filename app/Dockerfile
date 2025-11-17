@@ -15,9 +15,9 @@ RUN npm install
 # Copy the project files into the working directory
 COPY . .
 
-EXPOSE 3000
+EXPOSE 5173
 
 # Build and start the app
 # TODO: change this so that the app can replace the environment variables at runtime
 # without the need to build the app every time
-ENTRYPOINT ["npm", "run", "build:preview"]
+ENTRYPOINT ["npm", "run", "dev"]
