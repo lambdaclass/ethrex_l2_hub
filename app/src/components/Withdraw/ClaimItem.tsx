@@ -34,7 +34,6 @@ export const ClaimItem: React.FC<ClaimItemProps> = ({ index, claim }) => {
     if (!proof || !claimWithdraw) return;
 
     setIsClaiming(true);
-    setClaimStatus("Claiming funds...");
 
     try {
       await claimWithdraw(parseEther(claim.amount), proof);
@@ -42,7 +41,7 @@ export const ClaimItem: React.FC<ClaimItemProps> = ({ index, claim }) => {
       updateClaimStatus(claim.transaction_hash, true);
 
       setClaimed(true);
-      setClaimStatus("Funds claimed successfully!");
+      setClaimStatus(undefined);
     } catch (error) {
       console.log(error);
       setClaimStatus("Unable to claim funds. Please try again later.");
@@ -68,7 +67,7 @@ export const ClaimItem: React.FC<ClaimItemProps> = ({ index, claim }) => {
             </a>
           </p>
 
-          {claimStatus && <p className="text-gray-500 mt-1">{claimStatus}</p>}
+          {claimStatus && <p className="text-red-700 mt-1">{claimStatus}</p>}
         </div>
       </div>
 
@@ -79,7 +78,7 @@ export const ClaimItem: React.FC<ClaimItemProps> = ({ index, claim }) => {
           </span>
         ) : (
           <>
-            {!proofIsLoading && (
+            {!proofIsLoading && !isClaiming && (
               <span className="text-xs text-green-600 bg-green-100 rounded-full px-3 py-1">
                 Ready to Claim
               </span>
