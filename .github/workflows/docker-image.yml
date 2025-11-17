@@ -10,7 +10,7 @@ on:
 
 env:
   IMAGE_NAME: ethrex_l2_hub
-#
+
 jobs:
   # This pushes the image to GitHub Packages.
   push:
@@ -22,9 +22,10 @@ jobs:
       #
     steps:
       - uses: actions/checkout@v5
+      
+      - uses: dtolnay/rust-toolchain@stable
 
       - name: Install rex
-        uses: dtolnay/rust-toolchain@stable
         run: cargo install --locked --git https://github.com/lambdaclass/rex.git --branch add_abi_json_flag
 
       - name: Build image
