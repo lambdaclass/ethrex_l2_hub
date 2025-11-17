@@ -3,6 +3,7 @@
 ## Requirements
 
 - `rex` from [ethrex](https://github.com/lambdaclass/rex)
+    - Clone the repo, checkout to `add_abi_json_flag` and run `make cli`.
 - `cast` from [foundry](https://github.com/foundry-rs/foundry)
 
 

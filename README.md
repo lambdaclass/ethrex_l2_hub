@@ -82,6 +82,16 @@ cp app/.env.example app/.env
 
 7. Deploy smart contracts
 
+> [!IMPORTANT]
+> Running the following command requires a rex version that supports compiling contracts and outputting JSON ABI files. To install this version run the following commands:
+>
+> ```bash
+> git clone https://github.com/lambdaclass/rex.git
+> cd rex
+> git checkout add_abi_json_flag
+> make cli
+> ```
+
 This deploys two contracts to the L2:
 
 - `Delegation`: Enables account abstraction with passkey authentication
