@@ -1,7 +1,7 @@
-import { usePublicClient, useWalletClient, useWatchContractEvent } from "wagmi";
+import { usePublicClient, useWalletClient } from "wagmi";
 import CommonBridgeL1Abi from "../../abi/CommonBridgeL1.json";
 import CommonBridgeL2Abi from "../../abi/CommonBridgeL2.json";
-import { Address, Log, PublicClient } from "viem";
+import { PublicClient } from "viem";
 import { getWithdrawalProof, WithdrawalProof } from "../utils/customRpcMethods";
 import { useCallback, useEffect, useState } from "react";
 import { waitForTransactionReceipt } from "viem/actions";
@@ -70,27 +70,23 @@ export const useClaimProof = (txHash: `0x${string}`) => {
   const client = usePublicClient();
   const [proof, setProof] = useState<WithdrawalProof | undefined>();
 
-  const waitWithdrawalProof = async (
-    client: PublicClient,
-    txHash: `0x${string}`,
-  ): Promise<WithdrawalProof> => {
-    try {
-      const result = await getWithdrawalProof(client, txHash);
-      return result;
-    } catch (error) {
-      console.log(
-        "Withdrawal proof not available yet, retrying in 5 seconds...",
-      );
-      await new Promise((resolve) => setTimeout(resolve, 5000)); // Wait for 5 seconds before retrying
-      const result = await waitWithdrawalProof(client, txHash);
-      return result;
-    }
-  };
-
   useEffect(() => {
-    if (!client) return;
-    waitWithdrawalProof(client, txHash).then(setProof);
-  }, [client, txHash]);
+    if (!client || proof !== undefined) return;
+
+    const interval = setInterval(() => {
+      getWithdrawalProof(client, txHash)
+        .then(setProof)
+        .catch(() => {
+          console.log(
+            "Proof not available yet for txHash:",
+            txHash,
+            "retrying...",
+          );
+        });
+    }, 5000);
+
+    return () => clearInterval(interval);
+  }, [client, txHash, proof]);
 
   return { proof, isLoading: !proof };
 };
