@@ -12,11 +12,9 @@ A full-stack demonstration of **Ethrex L2**, showcasing a Layer 2 rollup solutio
 
 Before starting, ensure you have the following installed:
 
-<!-- Should we explain how to install each of these? --->
-
 - Node.js v21+ ([Download](https://nodejs.org/))
 - npm (comes with Node.js)
-- Solc - v0.8.28
+- Solc - v0.8.29
 - Rex - Utility tool for debugging and interacting with Ethereum. Install [here](https://github.com/lambdaclass/rex?tab=readme-ov-file#installing-the-cli)
 
 ## Setup and Deployment
@@ -28,13 +26,21 @@ Follow these steps to get the entire system running.
 1. Clone [ethrex](https://github.com/lambdaclass/ethrex)
 
 ```bash
-git clone https://github.com/lambdaclass/ethrex.git && cd ethrex/crates/l2
+git clone https://github.com/lambdaclass/ethrex.git && cd ethrex
 ```
 
 2. Checkout the branch required for this project
 
+<!--- FIXME: Remove this once https://github.com/lambdaclass/ethrex/pull/5339 is merged --->
+
 ```bash
 git checkout test_sponsor
+```
+
+3. Build ethrex
+
+```bash
+export COMPILE_CONTRACTS=true && cargo build --bin ethrex --release --manifest-path Cargo.toml --features l2,l2-sql
 ```
 
 3. Start L1 and L2
@@ -45,22 +51,21 @@ This command will:
 - Deploy L1 contracts (Bridge, OnChainProposer, Verifier)
 - Start the L2 on port 1729
 
-<!-- TODO: Discuss if we want to use this target or maybe something like ethrex l2 --dev.
-With monitor or without monitor?
---->
+If you want to use the account abstraction feature, you need to create a txt file with the addresses of the contract you want to sponsor.
+You
 
 ```bash
-make restart
+target/release/ethrex l2 --dev --no-monitor --sponsorable-addresses <YOUR_SPONSORABLE_ADDRESSES_FILE>
 ```
 
 Wait for the chains to fully initialize. You should see logs indicating both L1 (port 8545) and L2 (port 1729) are running. The deployment will also fund test accounts with ETH.
 
 4. Initialize the Prover
 
-In a new terminal window, still in `ethrex/crates/l2`, run:
+In a new terminal window, run:
 
 ```bash
-make init-prover-exec
+./ethrex l2 prover --backend exec --proof-coordinators tcp://127.0.0.1:3900
 ```
 
 Keep this terminal running. The prover must stay active for the L2 to function properly. Without it, withdrawals cannot be finalized.
@@ -76,6 +81,16 @@ cp app/.env.example app/.env
 ```
 
 7. Deploy smart contracts
+
+> [!IMPORTANT]
+> Running the following command requires a rex version that supports compiling contracts and outputting JSON ABI files. To install this version run the following commands:
+>
+> ```bash
+> git clone https://github.com/lambdaclass/rex.git
+> cd rex
+> git checkout add_abi_json_flag
+> make cli
+> ```
 
 This deploys two contracts to the L2:
 
@@ -190,22 +205,17 @@ Rex is a CLI tool that helps you debug and interact with your L1 and L2 chains. 
 
 ```bash
 # Check the transaction receipt for error details
-rex receipt <DEPLOYMENT_TX_HASH> --rpc-url http://localhost:1729
+rex receipt <DEPLOYMENT_TX_HASH> <RPC_URL>
 
 # Check the code of a contract
-rex code <CONTRACT_ADDRESS> --rpc-url http://localhost:1729
+rex code <CONTRACT_ADDRESS> <RPC_URL>
 
 # Verify L2 is producing blocks
-rex block-number --rpc-url http://localhost:1729
+rex block-number <L2_RPC_URL>
 
-# Check L1 balance
-rex balance <YOUR_ADDRESS> --rpc-url http://localhost:8545
+# Check balance
+rex balance <YOUR_ADDRESS> <RPC_URL>
 
-# Check L2 balance
-rex balance <YOUR_ADDRESS> --rpc-url http://localhost:1729
-
-# Check L1 transaction was successful
-rex receipt <L1_TX_HASH> --rpc-url http://localhost:8545
 ```
 
 ## Contributing

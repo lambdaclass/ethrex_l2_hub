@@ -1,20 +1,9 @@
-import { useAccount } from "wagmi"
-import { Deposit } from "../components/Deposit"
+import { DepositForm } from "../components/Deposit/Form";
 
-export const Bridge: React.FC = () => {
-  const { isConnected, isDisconnected } = useAccount()
-
-
-  if (isConnected)
-    return <Deposit />
-
-  if (isDisconnected)
-    return (
-      <p className="text-xl text-gray-600">Connect your wallet to get started.</p>
-    )
-
+export const Deposit: React.FC = () => {
   return (
-    <p className="text-xl text-gray-600">You must be connected to a valid network</p>
-  )
-
-}
+    <div className="grow">
+      <DepositForm />
+    </div>
+  );
+};

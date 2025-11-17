@@ -1,19 +1,11 @@
-import { useAccount } from "wagmi"
-import { Withdraw } from "../components/Withdraw"
+import { Claims } from "../components/Withdraw/Claims";
+import { WithdrawForm } from "../components/Withdraw/Form";
 
-export const Bridge: React.FC = () => {
-  const { isConnected, isDisconnected } = useAccount()
-
-  if (isConnected)
-    return <Withdraw />
-
-  if (isDisconnected)
-    return (
-      <p className="text-xl text-gray-600">Connect your wallet to get started.</p>
-    )
-
+export const Withdraw: React.FC = () => {
   return (
-    <p className="text-xl text-gray-600">You must be connected to a valid network</p>
-  )
-
-}
+    <div className="w-full flex flex-col justify-center items-center gap-15">
+      <WithdrawForm />
+      <Claims />
+    </div>
+  );
+};

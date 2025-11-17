@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.23;
 
-import {Base64} from "solady/utils/Base64.sol";
+import {Base64} from "@solady/src/utils/Base64.sol";
 import "./ECDSA.sol";
 import "./P256.sol";
 
@@ -19,7 +19,11 @@ library WebAuthnP256 {
     }
 
     /// Checks whether substr occurs in str starting at a given byte offset.
-    function contains(string memory substr, string memory str, uint256 location) internal pure returns (bool) {
+    function contains(
+        string memory substr,
+        string memory str,
+        uint256 location
+    ) internal pure returns (bool) {
         bytes memory substrBytes = bytes(substr);
         bytes memory strBytes = bytes(str);
 
@@ -47,7 +51,10 @@ library WebAuthnP256 {
     /// Verifies the authFlags in authenticatorData. Numbers in inline comment
     /// correspond to the same numbered bullets in
     /// https://www.w3.org/TR/webauthn-2/#sctn-verifying-assertion.
-    function checkAuthFlags(bytes1 flags, bool requireUserVerification) internal pure returns (bool) {
+    function checkAuthFlags(
+        bytes1 flags,
+        bool requireUserVerification
+    ) internal pure returns (bool) {
         // 17. Verify that the UP bit of the flags in authData is set.
         if (flags & AUTH_DATA_FLAGS_UP != AUTH_DATA_FLAGS_UP) {
             return false;
@@ -56,7 +63,10 @@ library WebAuthnP256 {
         // 18. If user verification was determined to be required, verify that
         // the UV bit of the flags in authData is set. Otherwise, ignore the
         // value of the UV flag.
-        if (requireUserVerification && (flags & AUTH_DATA_FLAGS_UV) != AUTH_DATA_FLAGS_UV) {
+        if (
+            requireUserVerification &&
+            (flags & AUTH_DATA_FLAGS_UV) != AUTH_DATA_FLAGS_UV
+        ) {
             return false;
         }
 
@@ -129,29 +139,50 @@ library WebAuthnP256 {
     ) internal view returns (bool) {
         // Check that authenticatorData has good flags
         if (
-            metadata.authenticatorData.length < 37
-                || !checkAuthFlags(metadata.authenticatorData[32], metadata.userVerificationRequired)
+            metadata.authenticatorData.length < 37 ||
+            !checkAuthFlags(
+                metadata.authenticatorData[32],
+                metadata.userVerificationRequired
+            )
         ) {
             return false;
         }
 
         // Check that response is for an authentication assertion
         string memory responseType = '"type":"webauthn.get"';
-        if (!contains(responseType, metadata.clientDataJSON, metadata.typeIndex)) {
+        if (
+            !contains(responseType, metadata.clientDataJSON, metadata.typeIndex)
+        ) {
             return false;
         }
 
         // Check that challenge is in the clientDataJSON
-        string memory challengeB64url = Base64.encode(abi.encodePacked(challenge), true, true);
-        string memory challengeProperty = string.concat('"challenge":"', challengeB64url, '"');
+        string memory challengeB64url = Base64.encode(
+            abi.encodePacked(challenge),
+            true,
+            true
+        );
+        string memory challengeProperty = string.concat(
+            '"challenge":"',
+            challengeB64url,
+            '"'
+        );
 
-        if (!contains(challengeProperty, metadata.clientDataJSON, metadata.challengeIndex)) {
+        if (
+            !contains(
+                challengeProperty,
+                metadata.clientDataJSON,
+                metadata.challengeIndex
+            )
+        ) {
             return false;
         }
 
         // Check that the public key signed sha256(authenticatorData || sha256(clientDataJSON))
         bytes32 clientDataJSONHash = sha256(bytes(metadata.clientDataJSON));
-        bytes32 messageHash = sha256(abi.encodePacked(metadata.authenticatorData, clientDataJSONHash));
+        bytes32 messageHash = sha256(
+            abi.encodePacked(metadata.authenticatorData, clientDataJSONHash)
+        );
 
         return P256.verify(messageHash, signature, publicKey);
     }

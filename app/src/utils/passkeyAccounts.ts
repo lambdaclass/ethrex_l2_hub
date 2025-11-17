@@ -15,7 +15,7 @@ import {
   waitForTransactionReceipt,
   writeContract,
 } from "viem/actions";
-import Delegation from "../../abi/Delegation.json";
+import Delegation from "../../../solc_out/Delegation.json";
 
 export const signUp = async ({
   client,
@@ -53,7 +53,7 @@ export const signUp = async ({
   });
 
   const hash = await writeContract(client, {
-    abi: Delegation.abi,
+    abi: Delegation,
     address: account.address,
     functionName: "authorize",
     args: [
@@ -91,7 +91,7 @@ export const login = async ({ client }: { client: Client }) => {
 
   const [publicKeyX, publicKeyY] = (await readContract(client, {
     address,
-    abi: Delegation.abi,
+    abi: Delegation,
     functionName: "authorizedKey",
   })) as [bigint, bigint];
 
