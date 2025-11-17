@@ -7,23 +7,25 @@ export const Header: React.FC = () => (
   <header className="w-full flex justify-between items-center px-10 py-5">
     {/* Left side - Logo */}
     <div className="flex items-center gap-8">
-      <h1 className="text-2xl font-bold text-gray-900">
-        <span className="text-indigo-600">Ethrex</span> Hub
-      </h1>
+      <Link to="/">
+        <h1 className="text-2xl font-bold text-gray-900">
+          <span className="text-indigo-600">Ethrex</span> Hub
+        </h1>
+      </Link>
 
       <nav className="flex gap-4">
-        <Link
-          to="/bridge/withdraw"
-          className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium transition-colors"
-        >
-          Withdraw
-        </Link>
-
         <Link
           to="/bridge/deposit"
           className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium transition-colors"
         >
           Deposit
+        </Link>
+
+        <Link
+          to="/bridge/withdraw"
+          className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium transition-colors"
+        >
+          Withdraw
         </Link>
 
         {/* <Link
