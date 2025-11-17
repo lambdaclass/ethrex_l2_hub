@@ -23,6 +23,12 @@ jobs:
     steps:
       - uses: actions/checkout@v5
 
+      - name: Install rex
+        uses: dtolnay/rust-toolchain@stable
+        run: |
+          cargo install --locked --git https://github.com/lambdaclass/rex.git --branch add_abi_json_flag
+          rex --version
+
       - name: Build image
         working-directory: ./app
         # TODO: add step to compile the contracts using rex
