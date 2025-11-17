@@ -1,26 +1,20 @@
-## Ethrex L2 HUB contracts
+# Ethrex L2 Hub contracts
 
-### Requirements
+## Requirements
 
-- `forge`
+- `rex` from [ethrex](https://github.com/lambdaclass/rex)
+    - Clone the repo, checkout to `add_abi_json_flag` and run `make cli`.
+- `cast` from [foundry](https://github.com/foundry-rs/foundry)
 
-### Dependencies
 
-To install all dependencies run:
-
-```bash
-forge install OpenZeppelin/openzeppelin-contracts --no-commit --no-git
-forge install vectorized/solady --no-commit --no-git
-```
-
-### Contracts
+## Contracts
 
 The project consists in the following contracts:
 
 - `Delegation`: This is a simple delegation contract that is aimed to be used by EOA to delegate their account. This contract allows users to authorize a single P256 public key to execute transactions on their behalf.
 - `TestToken`: This is an example OpenZeppelin ERC-20 token to test functionalities.
 
-### Deploy
+## Deploy
 
 We will declare some addresses and PKs:
 
@@ -33,12 +27,19 @@ export RICH_ACCOUNT_PK=0xbcdf20249abf0ed6d944c0288fad489e33f66b3960d9e6229c1cd21
 
 To deploy the contracts, you can follow this steps:
 
-- In another terminal, start an Ethrex L2 blockchain. You can do this by running `make restart` in the `crates/l2` directory of the Ethrex repo.
-- Be sure to have the `ETH_RPC_URL` env var set to the L2 RPC URL, e.g.: `export ETH_RPC_URL=http://localhost:1729`.
-- Deploy the delegation contract with `forge create --private-key $RICH_ACCOUNT_PK --broadcast Delegation`. The deployed address should be `0xb4B46bdAA835F8E4b4d8e208B6559cD267851051`.
-- Deploy the test token with `forge create --private-key $RICH_ACCOUNT_PK --broadcast TestToken --constructor-args $ALICE_ADDRESS`. The deployed address should be `0x17435ccE3d1B4fA2e5f8A08eD921D57C6762A180`. This will also mint tokens for `ALICE_ADDRESS`
+- In another terminal, start an ethrex L2 dev. You can do this by running the following command in the root directory of the [ethrex GitHub repository](https://github.com/lambdaclass/ethrex/):
 
-### Delegate an EOA
+    ```bash
+    `COMPILE_CONTRACTS=true cargo run --release --bin ethrex --features l2,l2-sql` -- l2 --dev --no-monitor
+    ```
+- Be sure to have the `ETH_RPC_URL` env var set to the L2 RPC URL, e.g.: `export ETH_RPC_URL=http://localhost:1729`.
+- Once you have the L1 and L2 running, to deploy the contracts run the following in the root directory of this repository:
+
+    ```bash
+    make deploy
+    ```
+
+## Delegate an EOA
 
 > [!WARNING]
 > WIP. P256 stuff are not tested yet

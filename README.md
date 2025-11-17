@@ -82,6 +82,16 @@ cp app/.env.example app/.env
 
 7. Deploy smart contracts
 
+> [!IMPORTANT]
+> Running the following command requires a rex version that supports compiling contracts and outputting JSON ABI files. To install this version run the following commands:
+>
+> ```bash
+> git clone https://github.com/lambdaclass/rex.git
+> cd rex
+> git checkout add_abi_json_flag
+> make cli
+> ```
+
 This deploys two contracts to the L2:
 
 - `Delegation`: Enables account abstraction with passkey authentication
@@ -195,22 +205,17 @@ Rex is a CLI tool that helps you debug and interact with your L1 and L2 chains. 
 
 ```bash
 # Check the transaction receipt for error details
-rex receipt <DEPLOYMENT_TX_HASH> --rpc-url http://localhost:1729
+rex receipt <DEPLOYMENT_TX_HASH> <RPC_URL>
 
 # Check the code of a contract
-rex code <CONTRACT_ADDRESS> --rpc-url http://localhost:1729
+rex code <CONTRACT_ADDRESS> <RPC_URL>
 
 # Verify L2 is producing blocks
-rex block-number --rpc-url http://localhost:1729
+rex block-number <L2_RPC_URL>
 
-# Check L1 balance
-rex balance <YOUR_ADDRESS> --rpc-url http://localhost:8545
+# Check balance
+rex balance <YOUR_ADDRESS> <RPC_URL>
 
-# Check L2 balance
-rex balance <YOUR_ADDRESS> --rpc-url http://localhost:1729
-
-# Check L1 transaction was successful
-rex receipt <L1_TX_HASH> --rpc-url http://localhost:8545
 ```
 
 ## Contributing
