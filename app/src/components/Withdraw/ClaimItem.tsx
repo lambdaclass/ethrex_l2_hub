@@ -1,6 +1,6 @@
 import { formatEther, parseEther } from "viem";
 import { useClaimProof, useClaimWithdraw } from "../../hooks/withdraw";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { updateClaimStatus } from "../../utils/claims";
 import { formatBalance } from "../../utils/formatting";
 
@@ -25,6 +25,10 @@ export const ClaimItem: React.FC<ClaimItemProps> = ({ index, claim }) => {
   const [isClaiming, setIsClaiming] = useState<boolean>(false);
   const [claimed, setClaimed] = useState<boolean>(claim.claimed);
   const [claimStatus, setClaimStatus] = useState<string | undefined>();
+
+  useEffect(() => {
+    setClaimed(claim.claimed);
+  }, [claim]);
 
   const onClick = async () => {
     if (!proof || !claimWithdraw) return;
@@ -59,7 +63,9 @@ export const ClaimItem: React.FC<ClaimItemProps> = ({ index, claim }) => {
         <div className="text-xs text-gray-500 mt-1 space-y-1">
           <p>
             Tx Hash:{" "}
-            <span className="text-indigo-600">{claim.transaction_hash}</span>
+            <a className="text-indigo-600" href="#">
+              {claim.transaction_hash}
+            </a>
           </p>
 
           {claimStatus && <p className="text-gray-500 mt-1">{claimStatus}</p>}
@@ -82,7 +88,7 @@ export const ClaimItem: React.FC<ClaimItemProps> = ({ index, claim }) => {
             <button
               onClick={onClick}
               disabled={!proof || proofIsLoading || isClaiming}
-              className="bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium py-2 px-4 rounded-xl transition-all shadow-md disabled:opacity-50"
+              className="main-button !py-1 !px-4"
             >
               {proofIsLoading
                 ? "Waiting for proof..."
