@@ -6,10 +6,8 @@ run-back:
 
 #Deploy contracts
 deploy:
-	cd contracts && \
-	forge create Delegation --private-key "941e103320615d394a55708be13e45994c7d93b932b064dbcb2b511fe3254e2e" --broadcast --rpc-url http://127.0.0.1:1729 --gas-price 5000000000 --gas-limit 5000000 && \
-	sleep 10 && \
-	forge create TestToken --private-key "941e103320615d394a55708be13e45994c7d93b932b064dbcb2b511fe3254e2e" --broadcast --rpc-url http://127.0.0.1:1729 --gas-price 5000000000 --gas-limit 5000000
+	rex deploy --contract-path contracts/src/Delegation.sol 0 0x941e103320615d394a55708be13e45994c7d93b932b064dbcb2b511fe3254e2e --remappings "@solady=https://github.com/Vectorized/solady"
+	rex deploy --contract-path contracts/src/TestToken.sol 0 0x941e103320615d394a55708be13e45994c7d93b932b064dbcb2b511fe3254e2e --remappings "@openzeppelin=https://github.com/OpenZeppelin/openzeppelin-contracts.git"
 
 #Run Hub front app
 run-front:
