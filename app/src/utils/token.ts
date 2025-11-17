@@ -4,8 +4,8 @@ import {
   waitForTransactionReceipt,
   writeContract,
 } from "viem/actions";
-import Delegation from "../../../contracts/out/Delegation.sol/Delegation.json";
-import TestToken from "../../../contracts/out/TestToken.sol/TestToken.json";
+import Delegation from "../../../solc_out/Delegation.json";
+import TestToken from "../../../solc_out/TestToken.json";
 import {
   type TransactionReceipt,
   type Address,
@@ -24,13 +24,13 @@ export const mintToken = async (
   credentialId: string,
 ): Promise<TransactionReceipt> => {
   const nonce = (await readContract(client, {
-    abi: Delegation.abi,
+    abi: Delegation,
     address: to,
     functionName: "nonce",
   })) as bigint;
 
   const calldata = encodeFunctionData({
-    abi: TestToken.abi,
+    abi: TestToken,
     functionName: "mint",
     args: [to, amount],
   });
@@ -51,7 +51,7 @@ export const mintToken = async (
   const s = BigInt(slice(signature, 32, 64));
 
   const hash = await writeContract(client, {
-    abi: Delegation.abi,
+    abi: Delegation,
     address: to,
     functionName: "execute",
     args: [
@@ -72,7 +72,7 @@ export const getTokenBalance = async (
   address: Address,
 ): Promise<bigint> => {
   return (await readContract(client, {
-    abi: TestToken.abi,
+    abi: TestToken,
     address: import.meta.env.VITE_TEST_TOKEN_CONTRACT_ADDRESS,
     functionName: "balanceOf",
     args: [address],
@@ -87,13 +87,13 @@ export const transferToken = async (
   credentialId: string,
 ): Promise<TransactionReceipt> => {
   const nonce = (await readContract(client, {
-    abi: Delegation.abi,
+    abi: Delegation,
     address: from,
     functionName: "nonce",
   })) as bigint;
 
   const calldata = encodeFunctionData({
-    abi: TestToken.abi,
+    abi: TestToken,
     functionName: "transfer",
     args: [to, amount],
   });
@@ -114,7 +114,7 @@ export const transferToken = async (
   const s = BigInt(slice(signature, 32, 64));
 
   const hash = await writeContract(client, {
-    abi: Delegation.abi,
+    abi: Delegation,
     address: from,
     functionName: "execute",
     args: [
