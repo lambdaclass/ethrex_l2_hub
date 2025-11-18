@@ -19,8 +19,14 @@ jobs:
     permissions:
       packages: write
       contents: read
+      #
     steps:
       - uses: actions/checkout@v5
+      
+      - uses: dtolnay/rust-toolchain@stable
+
+      - name: Install rex
+        run: cargo install --locked --git https://github.com/lambdaclass/rex.git --branch add_abi_json_flag
 
       - name: Build image
         working-directory: ./app
