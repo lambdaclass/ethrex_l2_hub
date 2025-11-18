@@ -23,13 +23,13 @@ export const mintToken = async (
   credentialId: string,
 ): Promise<TransactionReceipt> => {
   const nonce = (await readContract(client, {
-    abi: Delegation,
+    abi: Delegation.abi,
     address: to,
     functionName: "nonce",
   })) as bigint;
 
   const calldata = encodeFunctionData({
-    abi: TestToken,
+    abi: TestToken.abi,
     functionName: "mint",
     args: [to, amount],
   });
@@ -50,7 +50,7 @@ export const mintToken = async (
   const s = BigInt(slice(signature, 32, 64));
 
   const hash = await writeContract(client, {
-    abi: Delegation,
+    abi: Delegation.abi,
     address: to,
     functionName: "execute",
     args: [
@@ -71,7 +71,7 @@ export const getTokenBalance = async (
   address: Address,
 ): Promise<bigint> => {
   return (await readContract(client, {
-    abi: TestToken,
+    abi: TestToken.abi,
     address: import.meta.env.VITE_TEST_TOKEN_CONTRACT_ADDRESS,
     functionName: "balanceOf",
     args: [address],
@@ -86,13 +86,13 @@ export const transferToken = async (
   credentialId: string,
 ): Promise<TransactionReceipt> => {
   const nonce = (await readContract(client, {
-    abi: Delegation,
+    abi: Delegation.abi,
     address: from,
     functionName: "nonce",
   })) as bigint;
 
   const calldata = encodeFunctionData({
-    abi: TestToken,
+    abi: TestToken.abi,
     functionName: "transfer",
     args: [to, amount],
   });
@@ -113,7 +113,7 @@ export const transferToken = async (
   const s = BigInt(slice(signature, 32, 64));
 
   const hash = await writeContract(client, {
-    abi: Delegation,
+    abi: Delegation.abi,
     address: from,
     functionName: "execute",
     args: [

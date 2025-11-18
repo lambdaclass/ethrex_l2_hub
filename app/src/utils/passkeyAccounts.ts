@@ -40,8 +40,8 @@ export const signUp = async ({
   const digest = keccak256(
     encodePacked(
       ["uint256", "uint256", "uint256"],
-      [initial_nonce, publicKey.x, publicKey.y],
-    ),
+      [initial_nonce, publicKey.x, publicKey.y]
+    )
   );
 
   const signature = parseSignature(await account.sign({ hash: digest }));
@@ -53,7 +53,7 @@ export const signUp = async ({
   });
 
   const hash = await writeContract(client, {
-    abi: Delegation,
+    abi: Delegation.abi,
     address: account.address,
     functionName: "authorize",
     args: [
@@ -91,7 +91,7 @@ export const login = async ({ client }: { client: Client }) => {
 
   const [publicKeyX, publicKeyY] = (await readContract(client, {
     address,
-    abi: Delegation,
+    abi: Delegation.abi,
     functionName: "authorizedKey",
   })) as [bigint, bigint];
 
@@ -99,8 +99,9 @@ export const login = async ({ client }: { client: Client }) => {
     address,
     credential: {
       id: raw.id,
-      publicKey:
-        `0x${publicKeyX.toString(16)}${publicKeyY.toString(16)}` as Hex,
+      publicKey: `0x${publicKeyX.toString(16)}${publicKeyY.toString(
+        16
+      )}` as Hex,
       raw,
     },
   };
