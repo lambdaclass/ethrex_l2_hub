@@ -41,7 +41,7 @@ export const Success: React.FC<SuccessProps> = ({
           <div className="flex justify-between">
             <span className="text-gray-600 text-sm">From</span>
             <a
-              href={`https://etherscan.io/address/${successData.receipt.from}`}
+              href={`http://localhost:8083/address/${successData.receipt.from}`}
               target="_blank"
               className="text-indigo-600 hover:underline text-sm"
             >
@@ -52,7 +52,7 @@ export const Success: React.FC<SuccessProps> = ({
           <div className="flex justify-between">
             <span className="text-gray-600 text-sm">To</span>
             <a
-              href={`https://etherscan.io/address/${successData.receipt.to}`}
+              href={`http://localhost:8083/address/${successData.receipt.to}`}
               target="_blank"
               className="text-indigo-600 hover:underline text-sm"
             >
@@ -63,7 +63,7 @@ export const Success: React.FC<SuccessProps> = ({
           <div className="flex justify-between">
             <span className="text-gray-600 text-sm">Tx Hash</span>
             <a
-              href={`https://etherscan.io/tx/${successData.submissionTxHash}`}
+              href={`http://localhost:8083/tx/${successData.submissionTxHash}`}
               target="_blank"
               className="text-indigo-600 hover:underline text-sm"
             >
