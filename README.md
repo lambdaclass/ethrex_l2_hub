@@ -125,6 +125,37 @@ The app should now be running at `http://localhost:5173`
 make run-front
 ```
 
+## Running with Docker
+
+Pull the image from the registry with
+
+```bash
+docker pull ghcr.io/lambdaclass/ethrex_l2_hub:merge
+```
+
+Run the image with
+
+```bash
+docker run --name ethrex_l2_hub -p 5173:5173 --env-file /path/to/.env ghcr.io/lambdaclass/ethrex_l2_hub:merge
+```
+
+The `.env` file must contain the following environment variables (make sure to replace them with the actual values)
+
+```.env
+VITE_L1_NAME="Ethrex L1 Local"
+VITE_L1_RPC_URL=http://host.docker.internal:8545
+VITE_L1_CHAIN_ID=9
+VITE_L1_BRIDGE_ADDRESS=0xebc31Eff9D9f5F63F65A68734816b7De1256845B
+VITE_L2_NAME="Ethrex L2 Local"
+VITE_L2_RPC_URL=http://host.docker.internal:1729
+VITE_L2_CHAIN_ID=65536999
+VITE_L2_BRIDGE_ADDRESS=0x000000000000000000000000000000000000ffff
+VITE_WALLETCONNECT_PROJECT_ID=
+VITE_DELEGATION_CONTRACT_ADDRESS=0x00e29d532f1c62a923ee51ee439bfc1500b1ce4d
+VITE_TEST_TOKEN_CONTRACT_ADDRESS=0x4b8a3d616d9146d9ec66a33b76d63612eabede02
+
+```
+
 ## Features
 
 ### L1 ↔ L2 Bridge
