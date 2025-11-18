@@ -26,7 +26,14 @@ jobs:
       - uses: dtolnay/rust-toolchain@stable
 
       - name: Install rex
-        run: cargo install --locked --git https://github.com/lambdaclass/rex.git --branch add_abi_json_flag
+        run: cargo install --locked --git https://github.com/lambdaclass/rex.git --branch l2_hub
+
+      - name: Compile contracts
+        run: |
+          rex compile --contract-path contracts/src/Delegation.sol --remappings "@solady=https://github.com/Vectorized/solady"
+          rex compile --contract-path contracts/src/TestToken.sol --remappings "@openzeppelin=https://github.com/OpenZeppelin/openzeppelin-contracts.git"
+          mv solc_out/Delegation.abi solc_out/Delegation.json
+          mv solc_out/TestToken.abi solc_out/TestToken.json
 
       - name: Build image
         working-directory: ./app

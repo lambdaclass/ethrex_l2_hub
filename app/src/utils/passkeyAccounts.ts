@@ -15,7 +15,7 @@ import {
   waitForTransactionReceipt,
   writeContract,
 } from "viem/actions";
-import Delegation from "../../abi/Delegation.json";
+import Delegation from "../../../solc_out/Delegation.json";
 
 export const signUp = async ({
   client,

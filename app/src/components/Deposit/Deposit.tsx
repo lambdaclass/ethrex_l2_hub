@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { parseEther } from "viem";
 import { useAccount, useSwitchChain, useWaitForTransactionReceipt } from "wagmi";
-import { useDeposit, useWatchDepositInitiated } from "../hooks/deposit";
+import { useDeposit, useWatchDepositInitiated } from "../../hooks/deposit";
 
 export const Deposit: React.FC = () => {
   const [amount, setAmount] = useState<string>("");

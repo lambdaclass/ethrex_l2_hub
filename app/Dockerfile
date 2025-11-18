@@ -1,19 +1,18 @@
 FROM node:22-alpine3.21 AS build
 
 # Set the working directory inside the container
-WORKDIR /usr/src/app
+WORKDIR /usr/src
 
 # Copy package.json and package-lock.json into the container
-COPY package*.json ./
+COPY . .
 
 # node-gyp requires python3
 RUN apk add --no-cache python3 make g++
 
+WORKDIR /usr/src/app
+
 # Install dependencies using npm
 RUN npm install
-
-# Copy the project files into the working directory
-COPY . .
 
 EXPOSE 5173
 
