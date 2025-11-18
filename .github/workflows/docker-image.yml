@@ -12,14 +12,12 @@ env:
   IMAGE_NAME: ethrex_l2_hub
 
 jobs:
-  # This pushes the image to GitHub Packages.
   push:
     runs-on: ubuntu-latest
 
     permissions:
       packages: write
       contents: read
-      #
     steps:
       - uses: actions/checkout@v5
       
@@ -36,9 +34,7 @@ jobs:
           mv solc_out/TestToken.abi solc_out/TestToken.json
 
       - name: Build image
-        working-directory: ./app
-        # TODO: add step to compile the contracts using rex
-        run: docker build . --file Dockerfile --tag $IMAGE_NAME --label "runnumber=${GITHUB_RUN_ID}"
+        run: docker build . --file app/Dockerfile --tag $IMAGE_NAME --label "runnumber=${GITHUB_RUN_ID}"
 
       - name: Log in to registry
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin

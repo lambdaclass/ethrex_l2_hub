@@ -3,8 +3,8 @@ import {
   waitForTransactionReceipt,
   writeContract,
 } from "viem/actions";
-import Delegation from "../../../solc_out/Delegation.json";
-import TestToken from "../../../solc_out/TestToken.json";
+import Delegation from "../../abi/Delegation.json";
+import TestToken from "../../abi/TestToken.json";
 import {
   type TransactionReceipt,
   type Address,
