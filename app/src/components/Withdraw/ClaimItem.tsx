@@ -62,7 +62,9 @@ export const ClaimItem: React.FC<ClaimItemProps> = ({ index, claim }) => {
         <div className="text-xs text-gray-500 mt-1 space-y-1">
           <p>
             Tx Hash:{" "}
-            <a className="text-indigo-600" href="#">
+            <a className="text-indigo-600"
+              href={`http://localhost:8082/tx/${claim.transaction_hash}`}
+              target="_blank">
               {claim.transaction_hash}
             </a>
           </p>
