@@ -167,7 +167,7 @@ const Dashboard = forwardRef<DashboardRef, DashboardProps>(
               <div className="text-5xl font-bold text-gray-900 mb-1">
                 {formatBalance()}
               </div>
-              <div className="text-gray-700">ETRX Tokens</div>
+              <div className="text-gray-700">Tokens</div>
             </div>
 
             {/* Action Buttons */}

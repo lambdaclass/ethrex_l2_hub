@@ -124,7 +124,7 @@ export default function TransferModal({
         </div>
 
         <div className="text-sm text-gray-600 text-center mb-6">
-          <p>Transfer ETRX tokens to another address</p>
+          <p>Transfer tokens to another address</p>
         </div>
 
         {/* Error Message */}
@@ -157,7 +157,7 @@ export default function TransferModal({
           </div>
 
           <div>
-            <label className="block text-gray-700 text-sm mb-2">Amount (ETRX)</label>
+            <label className="block text-gray-700 text-sm mb-2">Amount</label>
             <div className="relative">
               <input
                 type="number"
@@ -169,9 +169,6 @@ export default function TransferModal({
                 step="0.01"
                 className="w-full border border-gray-300 rounded-xl p-3 focus:ring-2 focus:ring-indigo-500 focus:outline-none text-gray-800 bg-white"
               />
-              <div className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 text-sm font-medium">
-                ETRX
-              </div>
             </div>
           </div>
 

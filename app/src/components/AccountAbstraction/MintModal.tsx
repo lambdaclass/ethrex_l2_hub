@@ -114,7 +114,7 @@ export default function MintModal({
         </div>
 
         <div className="text-sm text-gray-600 text-center mb-6">
-          <p>Mint free ETRX tokens to your account</p>
+          <p>Mint tokens to your account</p>
         </div>
 
         {/* Error Message */}
@@ -132,7 +132,7 @@ export default function MintModal({
         {/* Form */}
         <div className="space-y-5">
           <div>
-            <label className="block text-gray-700 text-sm mb-2">Amount (ETRX)</label>
+            <label className="block text-gray-700 text-sm mb-2">Amount</label>
             <div className="relative">
               <input
                 type="number"
@@ -144,9 +144,6 @@ export default function MintModal({
                 step="0.01"
                 className="w-full border border-gray-300 rounded-xl p-3 focus:ring-2 focus:ring-indigo-500 focus:outline-none text-gray-800 bg-white"
               />
-              <div className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 text-sm font-medium">
-                ETRX
-              </div>
             </div>
             <div className="text-sm text-gray-600 text-right mt-1">
               Free tokens available
