@@ -12,7 +12,6 @@ env:
   IMAGE_NAME: ethrex_l2_hub
 
 jobs:
-  # This pushes the image to GitHub Packages.
   push:
     runs-on: ubuntu-latest
 
@@ -21,11 +20,21 @@ jobs:
       contents: read
     steps:
       - uses: actions/checkout@v5
+      
+      - uses: dtolnay/rust-toolchain@stable
+
+      - name: Install rex
+        run: cargo install --locked --git https://github.com/lambdaclass/rex.git --branch l2_hub
+
+      - name: Compile contracts
+        run: |
+          rex compile --contract-path contracts/src/Delegation.sol --remappings "@solady=https://github.com/Vectorized/solady"
+          rex compile --contract-path contracts/src/TestToken.sol --remappings "@openzeppelin=https://github.com/OpenZeppelin/openzeppelin-contracts.git"
+          mv solc_out/Delegation.abi solc_out/Delegation.json
+          mv solc_out/TestToken.abi solc_out/TestToken.json
 
       - name: Build image
-        working-directory: ./app
-        # TODO: add step to compile the contracts using rex
-        run: docker build . --file Dockerfile --tag $IMAGE_NAME --label "runnumber=${GITHUB_RUN_ID}"
+        run: docker build . --file app/Dockerfile --tag $IMAGE_NAME --label "runnumber=${GITHUB_RUN_ID}"
 
       - name: Log in to registry
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
