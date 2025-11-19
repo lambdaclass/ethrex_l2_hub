@@ -74,7 +74,7 @@ export default function TransferModal({
           setTimeout(() => {
             onTransferSuccess();
             handleClose();
-          }, 10000);
+          }, 2000);
         }
       }
     } catch (err) {
@@ -209,14 +209,7 @@ export default function TransferModal({
                   Tokens transferred successfully!
                 </h3>
                 <p className="text-sm text-green-700">
-                  Transaction Hash:{" "}
-                  <a
-                    href={`http://localhost:8082/tx/${receipt.transactionHash}`}
-                    target="_blank"
-                    className="text-indigo-600 hover:underline text-sm"
-                  >
-                    {formatHash(receipt.transactionHash)}
-                  </a>
+                  Transaction Hash: {formatHash(receipt.transactionHash)}
                 </p>
               </div>
             </div>
