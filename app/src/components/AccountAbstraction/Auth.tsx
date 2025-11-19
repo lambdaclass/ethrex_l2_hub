@@ -63,40 +63,38 @@ export default function Auth({ onAuthSuccess }: AuthProps) {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
-      <div className="bg-white p-8 rounded-xl shadow-lg w-full max-w-md">
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-800 mb-2">Passkey Account</h1>
-          <p className="text-gray-600">Create an account or login with your passkey</p>
+    <div className="min-h-screen flex items-center justify-center p-4">
+      <div className="form--container glass">
+        <h2 className="form--header">Passkey Account</h2>
+
+        <div className="form--small-text text-center">
+          <p>Create an account or login with your passkey</p>
         </div>
 
         {error && (
-          <div className="mb-6 p-4 bg-red-100 border border-red-400 text-red-700 rounded-lg">
+          <div className="w-full p-3 bg-red-100 border border-red-400 text-red-700 rounded-xl text-sm">
             {error}
           </div>
         )}
 
-        <div className="space-y-6">
+        <div className="w-full flex flex-col space-y-5">
           {/* Sign Up Section */}
-          <div className="space-y-4">
-            <h2 className="text-lg font-semibold text-gray-700">Create Account</h2>
-            <div className="space-y-3">
-              <input
-                type="text"
-                onChange={(e) => setUsername(e.target.value)}
-                value={username}
-                placeholder="Enter username"
-                className="w-full border border-gray-300 rounded-lg py-3 px-4 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                disabled={loading}
-              />
-              <button
-                onClick={handleSignUp}
-                disabled={loading}
-                className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold py-3 px-4 rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-md hover:shadow-lg"
-              >
-                {loading ? "Creating..." : "Sign Up"}
-              </button>
-            </div>
+          <div className="space-y-3">
+            <label className="form--label">Create Account</label>
+            <input
+              type="text"
+              onChange={(e) => setUsername(e.target.value)}
+              value={username}
+              placeholder="Enter username"
+              disabled={loading}
+            />
+            <button
+              onClick={handleSignUp}
+              disabled={loading}
+              className="main-button w-full"
+            >
+              {loading ? "Creating..." : "Sign Up"}
+            </button>
           </div>
 
           {/* Divider */}
@@ -110,12 +108,12 @@ export default function Auth({ onAuthSuccess }: AuthProps) {
           </div>
 
           {/* Login Section */}
-          <div className="space-y-4">
-            <h2 className="text-lg font-semibold text-gray-700">Login</h2>
+          <div className="space-y-3">
+            <label className="form--label">Already have an account?</label>
             <button
               onClick={handleLogin}
               disabled={loading}
-              className="w-full bg-gray-800 hover:bg-gray-900 text-white font-semibold py-3 px-4 rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-md hover:shadow-lg"
+              className="w-full bg-gray-800 hover:bg-gray-900 text-white font-medium py-3 rounded-xl transition-all shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {loading ? "Logging in..." : "Login with Passkey"}
             </button>
@@ -123,7 +121,7 @@ export default function Auth({ onAuthSuccess }: AuthProps) {
         </div>
 
         {loading && (
-          <div className="mt-6">
+          <div className="mt-4">
             <Loading />
           </div>
         )}

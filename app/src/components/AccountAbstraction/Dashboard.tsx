@@ -61,17 +61,17 @@ const Dashboard = forwardRef<DashboardRef, DashboardProps>(
     };
 
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-6">
+      <div className="min-h-screen p-6">
         <div className="max-w-4xl mx-auto">
           {/* Header */}
           <div className="flex items-center justify-between mb-8">
             <div>
-              <h1 className="text-4xl font-bold text-gray-800">Dashboard</h1>
-              <p className="text-gray-600 mt-1">Manage your account and tokens</p>
+              <h1 className="text-4xl font-bold text-gray-900">Dashboard</h1>
+              <p className="text-gray-700 mt-1">Manage your account and tokens</p>
             </div>
             <button
               onClick={onLogout}
-              className="flex items-center gap-2 px-4 py-2 text-gray-700 hover:text-gray-900 border border-gray-300 rounded-lg hover:bg-gray-50 transition-all"
+              className="secondary-button flex items-center gap-2"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -92,29 +92,29 @@ const Dashboard = forwardRef<DashboardRef, DashboardProps>(
           </div>
 
           {/* Main Card */}
-          <div className="bg-white rounded-2xl shadow-lg p-8 mb-6">
+          <div className="glass rounded-3xl shadow-lg p-8 mb-6">
             {/* User Info */}
             <div className="flex items-center gap-4 mb-6">
-              <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-2xl flex items-center justify-center text-white text-2xl font-bold shadow-md">
+              <div className="w-16 h-16 bg-indigo-600 rounded-2xl flex items-center justify-center text-white text-2xl font-bold shadow-md">
                 {getInitial()}
               </div>
               <div className="flex-1">
-                <h2 className="text-2xl font-bold text-gray-800">
+                <h2 className="text-2xl font-bold text-gray-900">
                   {username || "Anonymous"}
                 </h2>
                 <div className="flex items-center gap-2 mt-1">
-                  <span className="text-gray-600 font-mono text-sm">
+                  <span className="text-gray-700 font-mono text-sm">
                     {getShortAddress(address)}
                   </span>
                   <button
                     onClick={() => copyToClipboard(address)}
-                    className="p-1 hover:bg-gray-100 rounded transition-all"
+                    className="p-1 hover:bg-white hover:bg-opacity-30 rounded transition-all"
                     title="Copy address"
                   >
                     {copied ? (
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
-                        className="h-4 w-4 text-green-500"
+                        className="h-4 w-4 text-green-600"
                         viewBox="0 0 20 20"
                         fill="currentColor"
                       >
@@ -127,7 +127,7 @@ const Dashboard = forwardRef<DashboardRef, DashboardProps>(
                     ) : (
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
-                        className="h-4 w-4 text-gray-500"
+                        className="h-4 w-4 text-gray-600"
                         fill="none"
                         viewBox="0 0 24 24"
                         stroke="currentColor"
@@ -146,7 +146,7 @@ const Dashboard = forwardRef<DashboardRef, DashboardProps>(
             </div>
 
             {/* Balance */}
-            <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-6 mb-6">
+            <div className="bg-white bg-opacity-40 rounded-xl p-6 mb-6 border border-white border-opacity-50">
               <div className="flex items-center gap-2 text-indigo-700 mb-2">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -164,17 +164,17 @@ const Dashboard = forwardRef<DashboardRef, DashboardProps>(
                 </svg>
                 <span className="font-medium">Total Balance</span>
               </div>
-              <div className="text-5xl font-bold text-gray-800 mb-1">
+              <div className="text-5xl font-bold text-gray-900 mb-1">
                 {formatBalance()}
               </div>
-              <div className="text-gray-600">ETRX Tokens</div>
+              <div className="text-gray-700">ETRX Tokens</div>
             </div>
 
             {/* Action Buttons */}
             <div className="grid grid-cols-2 gap-4">
               <button
                 onClick={onMintClick}
-                className="flex items-center justify-center gap-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold py-4 rounded-xl transition-all shadow-md hover:shadow-lg"
+                className="main-button flex items-center justify-center gap-2"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -194,7 +194,7 @@ const Dashboard = forwardRef<DashboardRef, DashboardProps>(
               </button>
               <button
                 onClick={onTransferClick}
-                className="flex items-center justify-center gap-2 bg-gray-800 hover:bg-gray-900 text-white font-semibold py-4 rounded-xl transition-all shadow-md hover:shadow-lg"
+                className="flex items-center justify-center gap-2 bg-gray-800 hover:bg-gray-900 text-white font-medium py-3 rounded-xl transition-all shadow-md"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -216,7 +216,7 @@ const Dashboard = forwardRef<DashboardRef, DashboardProps>(
           </div>
 
           {/* Account Information */}
-          <div className="bg-white rounded-2xl shadow-lg p-8">
+          {/* <div className="bg-white rounded-2xl shadow-lg p-8">
             <h3 className="text-xl font-bold text-gray-800 mb-6">
               Account Information
             </h3>
@@ -234,7 +234,7 @@ const Dashboard = forwardRef<DashboardRef, DashboardProps>(
                 </div>
               </div>
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
     );
