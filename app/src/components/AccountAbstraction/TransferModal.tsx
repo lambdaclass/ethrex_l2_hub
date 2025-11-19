@@ -22,17 +22,13 @@ export default function TransferModal({
 }: TransferModalProps) {
   const [recipient, setRecipient] = useState<string>("");
   const [value, setValue] = useState<string>("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [receipt, setReceipt] = useState<TransactionReceipt | null>(null);
-  const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string>("");
 
   if (!isOpen) return null;
 
   const handleTransfer = async () => {
-    setError("");
-    setReceipt(null);
-
-    // Validation
     if (!recipient?.startsWith("0x")) {
       setError("Please enter a valid address (must start with 0x)");
       return;
@@ -45,29 +41,19 @@ export default function TransferModal({
     }
 
     setLoading(true);
-
     try {
-      const receipt = await transferToken(
-        client,
-        address,
-        recipient as `0x${string}`,
-        BigInt(amount) * 1000000000000000000n,
-        credentialId
-      );
+      const txReceipt = await transferToken(client, address, recipient as `0x${string}`, BigInt(amount) * 1000000000000000000n, credentialId);
+      setReceipt(txReceipt);
 
-      setLoading(false);
-      setReceipt(receipt);
-
-      if (receipt.status === "success") {
-        // Save transaction to history
+      if (txReceipt.status === "success") {
         saveTransaction(address, {
-          hash: receipt.transactionHash,
+          hash: txReceipt.transactionHash,
           method: "transfer",
           timestamp: Date.now(),
           from: address,
           to: recipient,
           amount: formatTokenAmount(amount),
-          blockNumber: Number(receipt.blockNumber),
+          blockNumber: Number(txReceipt.blockNumber),
         });
 
         if (onTransferSuccess) {
@@ -78,15 +64,16 @@ export default function TransferModal({
         }
       }
     } catch (err) {
-      setLoading(false);
       setError("Failed to transfer tokens. Please try again.");
       console.error(err);
+    } finally {
+      setLoading(false);
     }
   };
 
   const handleClose = () => {
+    setError(null);
     setReceipt(null);
-    setError("");
     setRecipient("");
     setValue("");
     onClose();

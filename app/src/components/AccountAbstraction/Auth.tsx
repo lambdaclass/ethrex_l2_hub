@@ -14,17 +14,17 @@ interface AuthProps {
 
 export default function Auth({ onAuthSuccess }: AuthProps) {
   const [loading, setLoading] = useState<boolean>(false);
-  const [username, setUsername] = useState<string>("");
-  const [error, setError] = useState<string>("");
+  const [username, setUsername] = useState<string | undefined>(undefined);
+  const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<"create" | "login">("create");
 
   const handleSignUp = async () => {
-    if (!username.trim()) {
+    if (!username) {
       setError("Please enter a username");
       return;
     }
 
-    setError("");
+    setError(null);
     setLoading(true);
 
     try {
@@ -44,7 +44,7 @@ export default function Auth({ onAuthSuccess }: AuthProps) {
   };
 
   const handleLogin = async () => {
-    setError("");
+    setError(null);
     setLoading(true);
 
     try {
@@ -70,7 +70,7 @@ export default function Auth({ onAuthSuccess }: AuthProps) {
           <button
             onClick={() => {
               setActiveTab("create");
-              setError("");
+              setError(null);
             }}
             className={`flex-1 py-3 px-4 rounded-xl font-medium transition-all ${activeTab === "create"
               ? "bg-white text-indigo-600 shadow-md"
@@ -82,7 +82,7 @@ export default function Auth({ onAuthSuccess }: AuthProps) {
           <button
             onClick={() => {
               setActiveTab("login");
-              setError("");
+              setError(null);
             }}
             className={`flex-1 py-3 px-4 rounded-xl font-medium transition-all ${activeTab === "login"
               ? "bg-white text-indigo-600 shadow-md"

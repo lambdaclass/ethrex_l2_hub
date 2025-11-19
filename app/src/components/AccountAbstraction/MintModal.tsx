@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { mintToken } from "../../utils/token";
-import { type TransactionReceipt, type Address } from "viem";
+import { type Address, type TransactionReceipt } from "viem";
 import { client } from "../../config/passkey_config";
 import { formatHash } from "../../utils/formatting";
 import { saveTransaction, formatTokenAmount } from "../../utils/transactionHistory";
@@ -21,16 +21,13 @@ export default function MintModal({
   onMintSuccess,
 }: MintModalProps) {
   const [mintValue, setMintValue] = useState<string>("10");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [receipt, setReceipt] = useState<TransactionReceipt | null>(null);
-  const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string>("");
 
   if (!isOpen) return null;
 
   const handleMint = async () => {
-    setError("");
-    setReceipt(null);
-
     const value = parseFloat(mintValue);
     if (isNaN(value) || value <= 0) {
       setError("Please enter a valid amount");
@@ -38,27 +35,19 @@ export default function MintModal({
     }
 
     setLoading(true);
-
     try {
-      const _receipt = await mintToken(
-        client,
-        address,
-        BigInt(value) * 1000000000000000000n,
-        credentialId
-      );
-      setLoading(false);
-      setReceipt(_receipt);
+      const txReceipt = await mintToken(client, address, BigInt(value) * 1000000000000000000n, credentialId);
+      setReceipt(txReceipt);
 
-      if (_receipt.status === "success") {
-        // Save transaction to history
+      if (txReceipt.status === "success") {
         saveTransaction(address, {
-          hash: _receipt.transactionHash,
+          hash: txReceipt.transactionHash,
           method: "mint",
           timestamp: Date.now(),
           from: address,
           to: address,
           amount: formatTokenAmount(value),
-          blockNumber: Number(_receipt.blockNumber),
+          blockNumber: Number(txReceipt.blockNumber),
         });
 
         if (onMintSuccess) {
@@ -69,15 +58,16 @@ export default function MintModal({
         }
       }
     } catch (err) {
-      setLoading(false);
       setError("Failed to mint tokens. Please try again.");
       console.error(err);
+    } finally {
+      setLoading(false);
     }
   };
 
   const handleClose = () => {
+    setError(null);
     setReceipt(null);
-    setError("");
     setMintValue("10");
     onClose();
   };
