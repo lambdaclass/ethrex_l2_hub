@@ -32,7 +32,6 @@ export const AccountAbstraction: React.FC = () => {
     setCredential(newCredential);
     setUsername(newUsername);
 
-    // Save to localStorage
     localStorage.setItem("passkey_address", newAddress);
     if (newUsername) {
       localStorage.setItem("passkey_username", newUsername);

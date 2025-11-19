@@ -30,7 +30,6 @@ export default function Auth({ onAuthSuccess }: AuthProps) {
     try {
       const { address, credential } = await signUp({ client, username });
 
-      // Save username to localStorage
       localStorage.setItem("passkey_username", username);
       localStorage.setItem("passkey_address", address);
 

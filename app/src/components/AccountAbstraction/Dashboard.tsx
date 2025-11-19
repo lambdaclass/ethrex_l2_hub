@@ -1,5 +1,5 @@
 import { useState, useEffect, useImperativeHandle, forwardRef, useRef } from "react";
-import { type Address } from "viem";
+import { type Address, formatEther } from "viem";
 import { getTokenBalance } from "../../utils/token";
 import { client } from "../../config/passkey_config";
 import TransactionHistory, { type TransactionHistoryRef } from "./TransactionHistory";
@@ -57,11 +57,6 @@ const Dashboard = forwardRef<DashboardRef, DashboardProps>(
 
     const getInitial = () => {
       return username ? username.charAt(0).toUpperCase() : "A";
-    };
-
-    const formatBalance = () => {
-      if (balance === undefined) return "0.00";
-      return (Number(balance) / 1e18).toFixed(2);
     };
 
     return (
@@ -169,7 +164,7 @@ const Dashboard = forwardRef<DashboardRef, DashboardProps>(
                 <span className="font-medium">Total Balance</span>
               </div>
               <div className="text-5xl font-bold text-gray-900 mb-1">
-                {formatBalance()}
+                {balance ? Number(formatEther(balance)).toFixed(2) : "0.00"}
               </div>
               <div className="text-gray-700">Tokens</div>
             </div>
@@ -221,27 +216,6 @@ const Dashboard = forwardRef<DashboardRef, DashboardProps>(
 
           {/* Transaction History */}
           <TransactionHistory ref={transactionHistoryRef} address={address} />
-
-          {/* Account Information */}
-          {/* <div className="bg-white rounded-2xl shadow-lg p-8">
-            <h3 className="text-xl font-bold text-gray-800 mb-6">
-              Account Information
-            </h3>
-            <div className="space-y-4">
-              <div className="flex justify-between items-center py-3 border-b border-gray-100">
-                <span className="text-gray-600 font-medium">Network</span>
-                <span className="text-gray-800 font-semibold">Ethrex Testnet</span>
-              </div>
-              <div className="flex justify-between items-center py-3">
-                <span className="text-gray-600 font-medium">Full Address</span>
-                <div className="flex items-center gap-2">
-                  <span className="text-gray-800 font-mono text-sm break-all max-w-md text-right">
-                    {address}
-                  </span>
-                </div>
-              </div>
-            </div>
-          </div> */}
         </div>
       </div>
     );
