@@ -2,6 +2,7 @@ import { useState } from "react";
 import { transferToken } from "../../utils/token";
 import { type Address, type TransactionReceipt } from "viem";
 import { client } from "../../config/passkey_config";
+import { formatHash } from "../../utils/formatting";
 
 interface TransferModalProps {
   isOpen: boolean;
@@ -60,7 +61,7 @@ export default function TransferModal({
         setTimeout(() => {
           onTransferSuccess();
           handleClose();
-        }, 2000);
+        }, 10000);
       }
     } catch (err) {
       setLoading(false);
@@ -195,9 +196,13 @@ export default function TransferModal({
                 </h3>
                 <p className="text-sm text-green-700">
                   Transaction Hash:{" "}
-                  <span className="font-mono break-all text-xs">
-                    {receipt.transactionHash}
-                  </span>
+                  <a
+                    href={`http://localhost:8082/tx/${receipt.transactionHash}`}
+                    target="_blank"
+                    className="text-indigo-600 hover:underline text-sm"
+                  >
+                    {formatHash(receipt.transactionHash)}
+                  </a>
                 </p>
               </div>
             </div>

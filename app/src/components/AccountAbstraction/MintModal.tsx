@@ -2,6 +2,7 @@ import { useState } from "react";
 import { mintToken } from "../../utils/token";
 import { type TransactionReceipt, type Address } from "viem";
 import { client } from "../../config/passkey_config";
+import { formatHash } from "../../utils/formatting";
 
 interface MintModalProps {
   isOpen: boolean;
@@ -51,7 +52,7 @@ export default function MintModal({
         setTimeout(() => {
           onMintSuccess();
           handleClose();
-        }, 2000);
+        }, 10000);
       }
     } catch (err) {
       setLoading(false);
@@ -173,9 +174,13 @@ export default function MintModal({
                 </h3>
                 <p className="text-sm text-green-700">
                   Transaction Hash:{" "}
-                  <span className="font-mono break-all text-xs">
-                    {receipt.transactionHash}
-                  </span>
+                  <a
+                    href={`http://localhost:8082/tx/${receipt.transactionHash}`}
+                    target="_blank"
+                    className="text-indigo-600 hover:underline text-sm"
+                  >
+                    {formatHash(receipt.transactionHash)}
+                  </a>
                 </p>
               </div>
             </div>
