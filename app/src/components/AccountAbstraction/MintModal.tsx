@@ -3,6 +3,7 @@ import { mintToken } from "../../utils/token";
 import { type TransactionReceipt, type Address } from "viem";
 import { client } from "../../config/passkey_config";
 import { formatHash } from "../../utils/formatting";
+import { saveTransaction, formatTokenAmount } from "../../utils/transactionHistory";
 
 interface MintModalProps {
   isOpen: boolean;
@@ -48,11 +49,24 @@ export default function MintModal({
       setLoading(false);
       setReceipt(_receipt);
 
-      if (_receipt.status === "success" && onMintSuccess) {
-        setTimeout(() => {
-          onMintSuccess();
-          handleClose();
-        }, 10000);
+      if (_receipt.status === "success") {
+        // Save transaction to history
+        saveTransaction(address, {
+          hash: _receipt.transactionHash,
+          method: "mint",
+          timestamp: Date.now(),
+          from: address,
+          to: address,
+          amount: formatTokenAmount(value),
+          blockNumber: Number(_receipt.blockNumber),
+        });
+
+        if (onMintSuccess) {
+          setTimeout(() => {
+            onMintSuccess();
+            handleClose();
+          }, 10000);
+        }
       }
     } catch (err) {
       setLoading(false);

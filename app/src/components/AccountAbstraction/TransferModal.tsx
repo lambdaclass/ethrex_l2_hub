@@ -3,6 +3,7 @@ import { transferToken } from "../../utils/token";
 import { type Address, type TransactionReceipt } from "viem";
 import { client } from "../../config/passkey_config";
 import { formatHash } from "../../utils/formatting";
+import { saveTransaction, formatTokenAmount } from "../../utils/transactionHistory";
 
 interface TransferModalProps {
   isOpen: boolean;
@@ -57,11 +58,24 @@ export default function TransferModal({
       setLoading(false);
       setReceipt(_receipt);
 
-      if (_receipt.status === "success" && onTransferSuccess) {
-        setTimeout(() => {
-          onTransferSuccess();
-          handleClose();
-        }, 10000);
+      if (_receipt.status === "success") {
+        // Save transaction to history
+        saveTransaction(address, {
+          hash: _receipt.transactionHash,
+          method: "transfer",
+          timestamp: Date.now(),
+          from: address,
+          to: recipient,
+          amount: formatTokenAmount(amount),
+          blockNumber: Number(_receipt.blockNumber),
+        });
+
+        if (onTransferSuccess) {
+          setTimeout(() => {
+            onTransferSuccess();
+            handleClose();
+          }, 10000);
+        }
       }
     } catch (err) {
       setLoading(false);

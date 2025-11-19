@@ -49,16 +49,18 @@ export const AccountAbstraction: React.FC = () => {
   };
 
   const handleMintSuccess = async () => {
-    // Refresh balance after minting
+    // Refresh balance and history after minting
     if (dashboardRef.current) {
       await dashboardRef.current.refreshBalance();
+      dashboardRef.current.refreshHistory();
     }
   };
 
   const handleTransferSuccess = async () => {
-    // Refresh balance after transfer
+    // Refresh balance and history after transfer
     if (dashboardRef.current) {
       await dashboardRef.current.refreshBalance();
+      dashboardRef.current.refreshHistory();
     }
   };
 

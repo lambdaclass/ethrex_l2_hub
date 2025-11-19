@@ -1,7 +1,8 @@
-import { useState, useEffect, useImperativeHandle, forwardRef } from "react";
+import { useState, useEffect, useImperativeHandle, forwardRef, useRef } from "react";
 import { type Address } from "viem";
 import { getTokenBalance } from "../../utils/token";
 import { client } from "../../config/passkey_config";
+import TransactionHistory, { type TransactionHistoryRef } from "./TransactionHistory";
 
 interface DashboardProps {
   address: Address;
@@ -13,6 +14,7 @@ interface DashboardProps {
 
 export interface DashboardRef {
   refreshBalance: () => Promise<void>;
+  refreshHistory: () => void;
 }
 
 const Dashboard = forwardRef<DashboardRef, DashboardProps>(
@@ -22,6 +24,7 @@ const Dashboard = forwardRef<DashboardRef, DashboardProps>(
   ) => {
     const [balance, setBalance] = useState<bigint | undefined>();
     const [copied, setCopied] = useState(false);
+    const transactionHistoryRef = useRef<TransactionHistoryRef>(null);
 
     useEffect(() => {
       updateBalance();
@@ -36,9 +39,10 @@ const Dashboard = forwardRef<DashboardRef, DashboardProps>(
       }
     };
 
-    // Expose refreshBalance method to parent component
+    // Expose refreshBalance and refreshHistory methods to parent component
     useImperativeHandle(ref, () => ({
       refreshBalance: updateBalance,
+      refreshHistory: () => transactionHistoryRef.current?.refreshHistory(),
     }));
 
     const copyToClipboard = (text: string) => {
@@ -214,6 +218,9 @@ const Dashboard = forwardRef<DashboardRef, DashboardProps>(
               </button>
             </div>
           </div>
+
+          {/* Transaction History */}
+          <TransactionHistory ref={transactionHistoryRef} address={address} />
 
           {/* Account Information */}
           {/* <div className="bg-white rounded-2xl shadow-lg p-8">
