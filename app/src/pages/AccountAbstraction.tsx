@@ -1,39 +1,99 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useSwitchChain } from "wagmi";
 import { type Address } from "viem";
 import { type CreateCredentialReturnType } from "webauthn-p256";
-import MintCard from "../components/AccountAbstraction/MintCard";
-import TransferCard from "../components/AccountAbstraction/TransferCard";
-import AccountCard from "../components/AccountAbstraction/AccountCard";
+import Auth from "../components/AccountAbstraction/Auth";
+import Dashboard, { type DashboardRef } from "../components/AccountAbstraction/Dashboard";
+import MintModal from "../components/AccountAbstraction/MintModal";
+import TransferModal from "../components/AccountAbstraction/TransferModal";
 
 export const AccountAbstraction: React.FC = () => {
   const [address, setAddress] = useState<Address | null>(null);
   const [credential, setCredential] =
     useState<CreateCredentialReturnType | null>(null);
+  const [username, setUsername] = useState<string | undefined>(undefined);
+  const [isMintModalOpen, setIsMintModalOpen] = useState(false);
+  const [isTransferModalOpen, setIsTransferModalOpen] = useState(false);
+
+  const dashboardRef = useRef<DashboardRef>(null);
 
   const { switchChain } = useSwitchChain();
+
   useEffect(() => {
     switchChain({ chainId: Number(import.meta.env.VITE_L2_CHAIN_ID) });
   }, []);
 
+  const handleAuthSuccess = (
+    newAddress: Address,
+    newCredential: CreateCredentialReturnType,
+    newUsername?: string
+  ) => {
+    setAddress(newAddress);
+    setCredential(newCredential);
+    setUsername(newUsername);
+
+    // Save to localStorage
+    localStorage.setItem("passkey_address", newAddress);
+    if (newUsername) {
+      localStorage.setItem("passkey_username", newUsername);
+    }
+  };
+
+  const handleLogout = () => {
+    setAddress(null);
+    setCredential(null);
+    setUsername(undefined);
+
+    // Keep username in localStorage for next login, but remove address
+    localStorage.removeItem("passkey_address");
+  };
+
+  const handleMintSuccess = async () => {
+    // Refresh balance after minting
+    if (dashboardRef.current) {
+      await dashboardRef.current.refreshBalance();
+    }
+  };
+
+  const handleTransferSuccess = async () => {
+    // Refresh balance after transfer
+    if (dashboardRef.current) {
+      await dashboardRef.current.refreshBalance();
+    }
+  };
+
+  // Show Auth screen if not logged in
+  if (!address || !credential) {
+    return <Auth onAuthSuccess={handleAuthSuccess} />;
+  }
+
+  // Show Dashboard if logged in
   return (
-    <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-3xl my-6">
-      <h2 className="text-xl font-semibold mb-4 text-center">Passkey Demo</h2>
-      <p className="text-lg text-gray-800">
-        This page demonstrates the use of the Account Abstraction feature on
-        Ethrex.
-      </p>
-      <br />
-      <AccountCard
+    <>
+      <Dashboard
+        ref={dashboardRef}
         address={address}
-        setAddress={setAddress}
-        credential={credential}
-        setCredential={setCredential}
+        username={username}
+        onLogout={handleLogout}
+        onMintClick={() => setIsMintModalOpen(true)}
+        onTransferClick={() => setIsTransferModalOpen(true)}
       />
-      <br />
-      <MintCard address={address} credentialId={credential?.id || null} />
-      <br />
-      <TransferCard address={address} credentialId={credential?.id || null} />
-    </div>
+
+      <MintModal
+        isOpen={isMintModalOpen}
+        onClose={() => setIsMintModalOpen(false)}
+        address={address}
+        credentialId={credential.id}
+        onMintSuccess={handleMintSuccess}
+      />
+
+      <TransferModal
+        isOpen={isTransferModalOpen}
+        onClose={() => setIsTransferModalOpen(false)}
+        address={address}
+        credentialId={credential.id}
+        onTransferSuccess={handleTransferSuccess}
+      />
+    </>
   );
 };
