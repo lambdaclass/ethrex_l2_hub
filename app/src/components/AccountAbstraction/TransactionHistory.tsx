@@ -36,7 +36,7 @@ const TransactionHistory = forwardRef<TransactionHistoryRef, TransactionHistoryP
       const stored = localStorage.getItem(key);
       if (stored) {
         const txs = JSON.parse(stored) as Transaction[];
-        setTransactions(txs.slice(0, 25)); // Show latest 25
+        setTransactions(txs); // Show all transactions
       }
     } catch (err) {
       console.error("Failed to load transactions:", err);
@@ -72,9 +72,6 @@ const TransactionHistory = forwardRef<TransactionHistoryRef, TransactionHistoryP
     <div className="glass rounded-3xl p-8">
       <div className="mb-6">
         <h3 className="text-xl font-bold text-gray-900">Transaction History</h3>
-        <p className="text-sm text-gray-600 mt-1">
-          Latest {Math.min(transactions.length, 25)} from a total of {transactions.length} transactions
-        </p>
       </div>
 
       <div className="overflow-x-auto">
@@ -165,7 +162,7 @@ const TransactionHistory = forwardRef<TransactionHistoryRef, TransactionHistoryP
 
                 {/* Amount */}
                 <td className="py-4 px-4 text-right">
-                  <span className="text-gray-700">
+                  <span className="text-sm text-gray-700">
                     {tx.amount}
                   </span>
                 </td>

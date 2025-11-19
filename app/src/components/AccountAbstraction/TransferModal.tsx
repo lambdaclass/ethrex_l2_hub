@@ -47,7 +47,7 @@ export default function TransferModal({
     setLoading(true);
 
     try {
-      const _receipt = await transferToken(
+      const receipt = await transferToken(
         client,
         address,
         recipient as `0x${string}`,
@@ -56,18 +56,18 @@ export default function TransferModal({
       );
 
       setLoading(false);
-      setReceipt(_receipt);
+      setReceipt(receipt);
 
-      if (_receipt.status === "success") {
+      if (receipt.status === "success") {
         // Save transaction to history
         saveTransaction(address, {
-          hash: _receipt.transactionHash,
+          hash: receipt.transactionHash,
           method: "transfer",
           timestamp: Date.now(),
           from: address,
           to: recipient,
           amount: formatTokenAmount(amount),
-          blockNumber: Number(_receipt.blockNumber),
+          blockNumber: Number(receipt.blockNumber),
         });
 
         if (onTransferSuccess) {
