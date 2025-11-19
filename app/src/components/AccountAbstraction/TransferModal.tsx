@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { transferToken } from "../../utils/token";
+import { transferToken, TOKENS_TO_WEI } from "../../utils/token";
 import { type Address, type TransactionReceipt } from "viem";
 import { client } from "../../config/passkey_config";
 import { formatHash } from "../../utils/formatting";
@@ -20,8 +20,8 @@ export default function TransferModal({
   credentialId,
   onTransferSuccess,
 }: TransferModalProps) {
-  const [recipient, setRecipient] = useState<string>("");
-  const [value, setValue] = useState<string>("");
+  const [recipient, setRecipient] = useState("");
+  const [value, setValue] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [receipt, setReceipt] = useState<TransactionReceipt | null>(null);
@@ -29,7 +29,7 @@ export default function TransferModal({
   if (!isOpen) return null;
 
   const handleTransfer = async () => {
-    if (!recipient?.startsWith("0x")) {
+    if (!recipient.startsWith("0x")) {
       setError("Please enter a valid address (must start with 0x)");
       return;
     }
@@ -42,7 +42,7 @@ export default function TransferModal({
 
     setLoading(true);
     try {
-      const txReceipt = await transferToken(client, address, recipient as `0x${string}`, BigInt(amount) * 1000000000000000000n, credentialId);
+      const txReceipt = await transferToken(client, address, recipient as `0x${string}`, BigInt(amount) * TOKENS_TO_WEI, credentialId);
       setReceipt(txReceipt);
 
       if (txReceipt.status === "success") {
@@ -57,10 +57,8 @@ export default function TransferModal({
         });
 
         if (onTransferSuccess) {
-          setTimeout(() => {
-            onTransferSuccess();
-            handleClose();
-          }, 2000);
+          onTransferSuccess();
+          setTimeout(handleClose, 2000);
         }
       }
     } catch (err) {
@@ -124,9 +122,7 @@ export default function TransferModal({
           </button>
         </div>
 
-        <div className="text-sm text-gray-600 mb-6">
-          <p>Transfer tokens to another address</p>
-        </div>
+        <p className="text-sm text-gray-600 mb-6">Transfer tokens to another address</p>
 
         {/* Error Message */}
         {error && (
@@ -156,18 +152,16 @@ export default function TransferModal({
 
           <div>
             <label className="block text-gray-700 text-sm mb-2">Amount</label>
-            <div className="relative">
-              <input
-                type="number"
-                value={value}
-                onChange={(e) => setValue(e.target.value)}
-                placeholder="0.00"
-                disabled={loading}
-                min="0"
-                step="0.01"
-                className="w-full border border-gray-300 rounded-xl p-3 focus:ring-2 focus:ring-indigo-500 focus:outline-none text-gray-800 bg-white"
-              />
-            </div>
+            <input
+              type="number"
+              value={value}
+              onChange={(e) => setValue(e.target.value)}
+              placeholder="0.00"
+              disabled={loading}
+              min="0"
+              step="0.01"
+              className="w-full border border-gray-300 rounded-xl p-3 focus:ring-2 focus:ring-indigo-500 focus:outline-none text-gray-800 bg-white"
+            />
           </div>
 
           <button

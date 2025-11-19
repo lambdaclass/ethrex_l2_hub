@@ -16,6 +16,8 @@ import {
 import { type Client } from "../config/passkey_config";
 import { sign } from "webauthn-p256";
 
+export const TOKENS_TO_WEI = 1000000000000000000n;
+
 export const mintToken = async (
   client: Client,
   to: Address,

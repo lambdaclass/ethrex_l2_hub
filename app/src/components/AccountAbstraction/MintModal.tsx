@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { mintToken } from "../../utils/token";
+import { mintToken, TOKENS_TO_WEI } from "../../utils/token";
 import { type Address, type TransactionReceipt } from "viem";
 import { client } from "../../config/passkey_config";
 import { formatHash } from "../../utils/formatting";
@@ -20,7 +20,7 @@ export default function MintModal({
   credentialId,
   onMintSuccess,
 }: MintModalProps) {
-  const [mintValue, setMintValue] = useState<string>("10");
+  const [mintValue, setMintValue] = useState("10");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [receipt, setReceipt] = useState<TransactionReceipt | null>(null);
@@ -36,7 +36,7 @@ export default function MintModal({
 
     setLoading(true);
     try {
-      const txReceipt = await mintToken(client, address, BigInt(value) * 1000000000000000000n, credentialId);
+      const txReceipt = await mintToken(client, address, BigInt(value) * TOKENS_TO_WEI, credentialId);
       setReceipt(txReceipt);
 
       if (txReceipt.status === "success") {
@@ -51,10 +51,8 @@ export default function MintModal({
         });
 
         if (onMintSuccess) {
-          setTimeout(() => {
-            onMintSuccess();
-            handleClose();
-          }, 2000);
+          onMintSuccess();
+          setTimeout(handleClose, 2000);
         }
       }
     } catch (err) {
@@ -117,9 +115,7 @@ export default function MintModal({
           </button>
         </div>
 
-        <div className="text-sm text-gray-600 mb-6">
-          <p>Mint tokens to your account</p>
-        </div>
+        <p className="text-sm text-gray-600 mb-6">Mint tokens to your account</p>
 
         {/* Error Message */}
         {error && (
@@ -137,18 +133,16 @@ export default function MintModal({
         <div className="space-y-5">
           <div>
             <label className="block text-gray-700 text-sm mb-2">Amount</label>
-            <div className="relative">
-              <input
-                type="number"
-                value={mintValue}
-                onChange={(e) => setMintValue(e.target.value)}
-                placeholder="0.00"
-                disabled={loading}
-                min="0"
-                step="0.01"
-                className="w-full border border-gray-300 rounded-xl p-3 focus:ring-2 focus:ring-indigo-500 focus:outline-none text-gray-800 bg-white"
-              />
-            </div>
+            <input
+              type="number"
+              value={mintValue}
+              onChange={(e) => setMintValue(e.target.value)}
+              placeholder="0.00"
+              disabled={loading}
+              min="0"
+              step="0.01"
+              className="w-full border border-gray-300 rounded-xl p-3 focus:ring-2 focus:ring-indigo-500 focus:outline-none text-gray-800 bg-white"
+            />
           </div>
 
           <button
