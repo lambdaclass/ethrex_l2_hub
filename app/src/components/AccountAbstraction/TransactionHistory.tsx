@@ -9,7 +9,6 @@ export interface Transaction {
   from: string;
   to: string;
   amount: string;
-  blockNumber?: number;
 }
 
 interface TransactionHistoryProps {
@@ -32,7 +31,7 @@ const TransactionHistory = forwardRef<TransactionHistoryRef, TransactionHistoryP
 
   const loadTransactions = () => {
     try {
-      const key = `passkey_transactions_${address}`;
+      const key = `passkey_transactions_${address.toLowerCase()}`;
       const stored = localStorage.getItem(key);
       if (stored) {
         const txs = JSON.parse(stored) as Transaction[];

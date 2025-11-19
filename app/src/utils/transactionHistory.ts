@@ -7,7 +7,7 @@ export const saveTransaction = (
   transaction: Transaction
 ): void => {
   try {
-    const key = `passkey_transactions_${address}`;
+    const key = `passkey_transactions_${address.toLowerCase()}`;
     const stored = localStorage.getItem(key);
     const transactions: Transaction[] = stored ? JSON.parse(stored) : [];
 

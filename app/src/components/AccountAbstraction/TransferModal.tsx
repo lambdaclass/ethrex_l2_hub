@@ -53,7 +53,6 @@ export default function TransferModal({
           from: address,
           to: recipient,
           amount: formatTokenAmount(amount),
-          blockNumber: Number(txReceipt.blockNumber),
         });
 
         if (onTransferSuccess) {

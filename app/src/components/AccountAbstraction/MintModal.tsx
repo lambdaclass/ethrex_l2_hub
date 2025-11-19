@@ -47,7 +47,6 @@ export default function MintModal({
           from: address,
           to: address,
           amount: formatTokenAmount(value),
-          blockNumber: Number(txReceipt.blockNumber),
         });
 
         if (onMintSuccess) {
