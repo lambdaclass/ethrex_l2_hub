@@ -62,8 +62,8 @@ export default function Auth({ onAuthSuccess }: AuthProps) {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4">
-      <div className="glass rounded-3xl p-8 w-full max-w-md shadow-xl">
+    <div className="grow flex items-center">
+      <div className="glass rounded-3xl p-8 w-full max-w-md shadow-xl mx-auto my-auto">
         {/* Tabs */}
         <div className="flex gap-3 mb-6">
           <button
