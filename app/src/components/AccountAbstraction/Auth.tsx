@@ -1,7 +1,6 @@
 import { useState } from "react";
-import { Loading } from "../Loading";
 import { login, signUp } from "../../utils/passkeyAccounts";
-import { type TransactionReceipt, type Address } from "viem";
+import { type Address } from "viem";
 import { type CreateCredentialReturnType } from "webauthn-p256";
 import { client } from "../../config/passkey_config";
 
@@ -29,7 +28,7 @@ export default function Auth({ onAuthSuccess }: AuthProps) {
     setLoading(true);
 
     try {
-      const { address, credential, receipt } = await signUp({ client, username });
+      const { address, credential } = await signUp({ client, username });
 
       // Save username to localStorage
       localStorage.setItem("passkey_username", username);
