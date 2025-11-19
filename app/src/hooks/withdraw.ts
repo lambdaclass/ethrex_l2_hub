@@ -1,7 +1,6 @@
 import { usePublicClient, useWalletClient } from "wagmi";
 import CommonBridgeL1Abi from "../../abi/CommonBridgeL1.json";
 import CommonBridgeL2Abi from "../../abi/CommonBridgeL2.json";
-import { PublicClient } from "viem";
 import { getWithdrawalProof, WithdrawalProof } from "../utils/customRpcMethods";
 import { useCallback, useEffect, useState } from "react";
 import { waitForTransactionReceipt } from "viem/actions";

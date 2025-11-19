@@ -1,6 +1,6 @@
 import { useAccount } from "wagmi"
 import { Deposit } from "../components/Deposit/Deposit"
-import { Withdraw } from "../components/Withdraw"
+import { WithdrawForm } from "../components/Withdraw/Form"
 
 export const Bridge: React.FC = () => {
   const { chainId, isConnected, isDisconnected } = useAccount()
@@ -9,7 +9,7 @@ export const Bridge: React.FC = () => {
     return <Deposit />
 
   if (isConnected && (chainId == import.meta.env.VITE_L2_CHAIN_ID))
-    return <Withdraw />
+    return <WithdrawForm />
 
   if (isDisconnected)
     return (

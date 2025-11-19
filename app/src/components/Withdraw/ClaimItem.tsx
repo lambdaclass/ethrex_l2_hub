@@ -1,4 +1,4 @@
-import { formatEther, parseEther } from "viem";
+import { parseEther } from "viem";
 import { useClaimProof, useClaimWithdraw } from "../../hooks/withdraw";
 import { useEffect, useState } from "react";
 import { updateClaimStatus } from "../../utils/claims";
