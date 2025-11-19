@@ -21,7 +21,7 @@ export const AddressContext = ({ children }: AddressProviderProps) => {
   useEffect(() => {
     if (isConnecting) return;
 
-    if (!isConnected && location.pathname !== "/") {
+    if (!isConnected && location.pathname !== "/" && location.pathname !== "/passkey_demo") {
       navigate("/", { replace: true });
       return;
     }
