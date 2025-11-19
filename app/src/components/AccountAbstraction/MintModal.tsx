@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { mintToken } from "../../utils/token";
 import { type TransactionReceipt, type Address } from "viem";
-import { Loading } from "../Loading";
 import { client } from "../../config/passkey_config";
 
 interface MintModalProps {
@@ -113,7 +112,7 @@ export default function MintModal({
           </button>
         </div>
 
-        <div className="text-sm text-gray-600 text-center mb-6">
+        <div className="text-sm text-gray-600 mb-6">
           <p>Mint tokens to your account</p>
         </div>
 
@@ -145,26 +144,21 @@ export default function MintModal({
                 className="w-full border border-gray-300 rounded-xl p-3 focus:ring-2 focus:ring-indigo-500 focus:outline-none text-gray-800 bg-white"
               />
             </div>
-            <div className="text-sm text-gray-600 text-right mt-1">
-              Free tokens available
-            </div>
           </div>
 
           <button
             onClick={handleMint}
             disabled={loading}
-            className="main-button w-full"
+            className="main-button w-full flex items-center justify-center gap-2"
           >
+            {loading && (
+              <div className="w-5 h-5">
+                <div className="spinner w-5 h-5"></div>
+              </div>
+            )}
             {loading ? "Minting..." : "Mint Tokens"}
           </button>
         </div>
-
-        {/* Loading */}
-        {loading && (
-          <div className="mt-4">
-            <Loading />
-          </div>
-        )}
 
         {/* Success Message */}
         {!loading && receipt?.status === "success" && (

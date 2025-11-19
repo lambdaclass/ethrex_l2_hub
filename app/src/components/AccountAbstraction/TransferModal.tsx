@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { transferToken } from "../../utils/token";
 import { type Address, type TransactionReceipt } from "viem";
-import { Loading } from "../Loading";
 import { client } from "../../config/passkey_config";
 
 interface TransferModalProps {
@@ -123,7 +122,7 @@ export default function TransferModal({
           </button>
         </div>
 
-        <div className="text-sm text-gray-600 text-center mb-6">
+        <div className="text-sm text-gray-600 mb-6">
           <p>Transfer tokens to another address</p>
         </div>
 
@@ -151,9 +150,6 @@ export default function TransferModal({
               disabled={loading}
               className="w-full border border-gray-300 rounded-xl p-3 focus:ring-2 focus:ring-indigo-500 focus:outline-none text-gray-800 bg-white font-mono text-sm"
             />
-            <div className="text-sm text-gray-600 text-left mt-1">
-              Enter the wallet address to send tokens to
-            </div>
           </div>
 
           <div>
@@ -175,18 +171,16 @@ export default function TransferModal({
           <button
             onClick={handleTransfer}
             disabled={loading}
-            className="w-full bg-gray-800 hover:bg-gray-900 text-white font-medium py-3 rounded-xl transition-all shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full bg-gray-800 hover:bg-gray-900 text-white font-medium py-3 rounded-xl transition-all shadow-md disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
           >
+            {loading && (
+              <div className="w-5 h-5">
+                <div className="spinner w-5 h-5"></div>
+              </div>
+            )}
             {loading ? "Sending..." : "Send Tokens"}
           </button>
         </div>
-
-        {/* Loading */}
-        {loading && (
-          <div className="mt-4">
-            <Loading />
-          </div>
-        )}
 
         {/* Success Message */}
         {!loading && receipt?.status === "success" && (
