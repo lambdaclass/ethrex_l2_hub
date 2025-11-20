@@ -99,9 +99,7 @@ export const login = async ({ client }: { client: Client }) => {
     address,
     credential: {
       id: raw.id,
-      publicKey: `0x${publicKeyX.toString(16)}${publicKeyY.toString(
-        16
-      )}` as Hex,
+      publicKey: `0x${publicKeyX.toString(16)}${publicKeyY.toString(16)}` as Hex,
       raw,
     },
   };

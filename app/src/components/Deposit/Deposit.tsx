@@ -1,13 +1,12 @@
 import { useState, useEffect } from "react";
-import { parseEther } from "viem";
-import { useAccount, useSwitchChain, useWaitForTransactionReceipt } from "wagmi";
-import { useDeposit, useWatchDepositInitiated } from "../hooks/deposit";
+import { parseEther, type Log } from "viem";
+import { useAccount, useSwitchChain } from "wagmi";
+import { useDeposit, useWatchDepositInitiated } from "../../hooks/deposit";
 
 export const Deposit: React.FC = () => {
   const [amount, setAmount] = useState<string>("");
   useAccount();
-  const { data, isPending, isSuccess: isTxSuccess, deposit } = useDeposit({ amount: parseEther(amount) })
-  const { isLoading, isSuccess: isTxReciptSuccess } = useWaitForTransactionReceipt({ hash: data })
+  const { deposit, step, txHash } = useDeposit();
   const { switchChain } = useSwitchChain()
 
   useEffect(() => {
@@ -15,12 +14,12 @@ export const Deposit: React.FC = () => {
   }, [])
 
   useEffect(() => {
-    if (isTxReciptSuccess)
+    if (step === "done")
       setAmount("")
-  }, [isTxReciptSuccess])
+  }, [step])
 
   useWatchDepositInitiated({
-    onLogs: (logs) => {
+    onLogs: (logs: Log[]) => {
       console.log(logs)
     }
   })
@@ -37,26 +36,23 @@ export const Deposit: React.FC = () => {
           className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
         <button
-          onClick={deposit}
-          disabled={isPending}
+          onClick={() => deposit && deposit(parseEther(amount))}
+          disabled={!deposit || step === "signing" || step === "waiting_signature_receipt"}
           className="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 transition duration-200 disabled:bg-blue-300"
         >
-          {isPending ? "Waiting for wallet confirmation..." : "Deposit"}
+          {step === "signing" ? "Waiting for wallet confirmation..." : "Deposit"}
         </button>
-        {isTxSuccess &&
-          <div className={`p-4 ${isTxReciptSuccess ? "bg-green-300" : "bg-violet-200"} rounded-md`}>
-            <h3 className="text-lg font-semibold text-gray-800">The Deposit Process has {isTxReciptSuccess ? "Finished" : "started"}</h3>
+        {txHash &&
+          <div className={`p-4 ${step === "done" ? "bg-green-300" : "bg-violet-200"} rounded-md`}>
+            <h3 className="text-lg font-semibold text-gray-800">The Deposit Process has {step === "done" ? "Finished" : "started"}</h3>
             <p className="text-sm text-gray-700 mt-2">
               Transaction Hash:{" "}
-              <span className="font-mono break-all">{data}</span>
+              <span className="font-mono break-all">{txHash}</span>
             </p>
-            {isLoading &&
+            {step === "waiting_signature_receipt" &&
               <p className="text-sm text-gray-500 mt-2">Waiting for confirmation...</p>}
-            {isTxReciptSuccess &&
+            {step === "done" &&
               <p className="text-sm text-gray-700 mt-2">The deposit has been sent!</p>}
-            {
-
-            }
           </div>}
       </div>
     </div>
