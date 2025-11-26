@@ -40,11 +40,6 @@ export const BridgeConfigProvider = ({ children }: BridgeConfigProviderProps) =>
 					throw new Error("Bridge address not found in health response");
 				}
 
-				// Validate it's a proper hex address
-				if (!/^0x[a-fA-F0-9]{40}$/.test(bridgeAddress)) {
-					throw new Error("Invalid bridge address format");
-				}
-
 				console.log("L1 Bridge address:", bridgeAddress);
 
 				setL1BridgeAddress(bridgeAddress as `0x${string}`);
