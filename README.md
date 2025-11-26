@@ -164,8 +164,6 @@ VITE_TEST_TOKEN_CONTRACT_ADDRESS=0x4b8a3d616d9146d9ec66a33b76d63612eabede02
   - **Docker**: Use `http://host.docker.internal:5555` to access the host's ethrex node from within the container
   - The Vite dev server proxies requests to avoid CORS issues
 
-- **`VITE_L1_BRIDGE_ADDRESS`**: No longer required. The L1 bridge address is now dynamically fetched from the ethrex node's health endpoint at startup. The app will retry until the bridge contract is deployed and available.
-
 ## Features
 
 ### L1 ↔ L2 Bridge
