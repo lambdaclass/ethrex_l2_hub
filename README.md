@@ -145,7 +145,7 @@ The `.env` file must contain the following environment variables (make sure to r
 VITE_L1_NAME="Ethrex L1 Local"
 VITE_L1_RPC_URL=http://host.docker.internal:8545
 VITE_L1_CHAIN_ID=9
-VITE_L1_BRIDGE_ADDRESS=0xebc31Eff9D9f5F63F65A68734816b7De1256845B
+VITE_HEALTH_ENDPOINT=http://localhost:5555/health
 VITE_L2_NAME="Ethrex L2 Local"
 VITE_L2_RPC_URL=http://host.docker.internal:1729
 VITE_L2_CHAIN_ID=65536999

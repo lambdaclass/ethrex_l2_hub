@@ -1,20 +1,23 @@
-import CommonBridgeL1Abi from "../../abi/CommonBridgeL1.json"
-import { useWalletClient, useWatchContractEvent } from "wagmi"
-import { Address, Log, TransactionReceipt } from "viem"
-import { useCallback, useState } from "react"
-import { sendTransaction, waitForTransactionReceipt } from "viem/actions"
+import CommonBridgeL1Abi from "../../abi/CommonBridgeL1.json";
+import { useWalletClient, useWatchContractEvent } from "wagmi";
+import { Address, Log, TransactionReceipt } from "viem";
+import { useCallback, useState } from "react";
+import { sendTransaction, waitForTransactionReceipt } from "viem/actions";
+import { useBridgeConfig } from "../components/BridgeConfigContext";
 
-const commondProps = {
+const useCommonProps = () => {
+  const { l1BridgeAddress } = useBridgeConfig();
+  return {
     abi: CommonBridgeL1Abi,
-    address: import.meta.env.VITE_L1_BRIDGE_ADDRESS,
+    address: l1BridgeAddress,
     chainId: Number(import.meta.env.VITE_L1_CHAIN_ID),
-}
+  };
+};
 
 type DepositError = {
   receipt?: TransactionReceipt | null;
   message?: string;
 };
-
 
 export type DepositStep =
   | "idle"
@@ -29,18 +32,18 @@ export type DepositStep =
 // }
 
 export type DepositInitiatedProps = {
-    onLogs: (logs: Log[]) => void
-    args?: {
-        amount?: bigint,
-        to?: Address,
-        depistId?: bigint,
-        recipient?: Address,
-        from?: Address,
-        gasLimit?: bigint,
-        data?: string,
-        l2MintTxhash?: string,
-    }
-}
+  onLogs: (logs: Log[]) => void;
+  args?: {
+    amount?: bigint;
+    to?: Address;
+    depistId?: bigint;
+    recipient?: Address;
+    from?: Address;
+    gasLimit?: bigint;
+    data?: string;
+    l2MintTxhash?: string;
+  };
+};
 
 // export const useDeposit = ({ amount }: useDepositProps) => {
 
@@ -58,6 +61,7 @@ export type DepositInitiatedProps = {
 
 export const useDeposit = () => {
   const { data: walletClient } = useWalletClient();
+  const { l1BridgeAddress } = useBridgeConfig();
   const [step, setStep] = useState<DepositStep>("idle");
   const [txHash, setTxHash] = useState<`0x${string}` | undefined>(undefined);
 
@@ -67,16 +71,20 @@ export const useDeposit = () => {
         throw { message: "Wallet not connected", step: "init" };
       }
 
+      if (!l1BridgeAddress) {
+        throw { message: "Bridge address not available", step: "init" };
+      }
+
       setStep("signing");
 
       try {
         const tx = await walletClient.sendTransaction({
-          to: import.meta.env.VITE_L1_BRIDGE_ADDRESS as `0x${string}`,
+          to: l1BridgeAddress,
           value: amount,
           chainId: Number(import.meta.env.VITE_L1_CHAIN_ID),
         });
 
-        console.log(sendTransaction)
+        console.log(sendTransaction);
 
         setTxHash(tx);
         setStep("waiting_signature_receipt");
@@ -106,11 +114,12 @@ export const useDeposit = () => {
         throw {
           amount,
           receipt: err["receipt"],
-          message: err["message"] || "An unknown error occurred during deposit.",
+          message:
+            err["message"] || "An unknown error occurred during deposit.",
         };
       }
     },
-    [walletClient]
+    [walletClient, l1BridgeAddress]
   );
 
   return {
@@ -120,14 +129,17 @@ export const useDeposit = () => {
   };
 };
 
-
-export const useWatchDepositInitiated = ({ onLogs, args }: DepositInitiatedProps) => {
-    return useWatchContractEvent({
-        ...commondProps,
-        eventName: "DepositInitiated",
-        poll: true,
-        pollingInterval: 1000,
-        args,
-        onLogs
-    })
-}
+export const useWatchDepositInitiated = ({
+  onLogs,
+  args,
+}: DepositInitiatedProps) => {
+  const commonProps = useCommonProps();
+  return useWatchContractEvent({
+    ...commonProps,
+    eventName: "DepositInitiated",
+    poll: true,
+    pollingInterval: 1000,
+    args,
+    onLogs,
+  });
+};
