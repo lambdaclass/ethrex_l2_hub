@@ -25,17 +25,9 @@ export const BridgeConfigProvider = ({ children }: BridgeConfigProviderProps) =>
 	const [retryCount, setRetryCount] = useState(0);
 
 	useEffect(() => {
-		const healthEndpoint = import.meta.env.VITE_HEALTH_ENDPOINT;
-
-		if (!healthEndpoint) {
-			setError("VITE_HEALTH_ENDPOINT is not configured");
-			setIsLoading(false);
-			return;
-		}
-
 		const fetchBridgeAddress = async () => {
 			try {
-				const response = await fetch(`${healthEndpoint}`);
+				const response = await fetch('/api/health');
 
 				if (!response.ok) {
 					throw new Error(`HTTP error! status: ${response.status}`);
