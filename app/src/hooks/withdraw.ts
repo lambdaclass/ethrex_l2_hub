@@ -5,6 +5,7 @@ import { getWithdrawalProof, WithdrawalProof } from "../utils/customRpcMethods";
 import { useCallback, useEffect, useState } from "react";
 import { waitForTransactionReceipt } from "viem/actions";
 import { FailureData, SuccessData } from "../components/Withdraw/Modal";
+import { useBridgeConfig } from "../components/BridgeConfigContext";
 
 const commondPropsL2 = {
   abi: CommonBridgeL2Abi,
@@ -12,16 +13,20 @@ const commondPropsL2 = {
   chainId: Number(import.meta.env.VITE_L2_CHAIN_ID),
 };
 
-const commondPropsL1 = {
-  abi: CommonBridgeL1Abi,
-  address: import.meta.env.VITE_L1_BRIDGE_ADDRESS,
-  chainId: Number(import.meta.env.VITE_L1_CHAIN_ID),
+const useCommonPropsL1 = () => {
+  const { l1BridgeAddress } = useBridgeConfig();
+  return {
+    abi: CommonBridgeL1Abi,
+    address: l1BridgeAddress,
+    chainId: Number(import.meta.env.VITE_L1_CHAIN_ID),
+  };
 };
 
 export const useClaimWithdraw = () => {
   const { data: client } = useWalletClient({
     chainId: Number(import.meta.env.VITE_L1_CHAIN_ID),
   });
+  const commonPropsL1 = useCommonPropsL1();
 
   const claimWithdraw = useCallback(
     async (amount: bigint, proof: WithdrawalProof) => {
@@ -33,7 +38,7 @@ export const useClaimWithdraw = () => {
         });
 
         const txHash = await client.writeContract({
-          ...commondPropsL1,
+          ...commonPropsL1,
           functionName: "claimWithdrawal",
           args: [amount, proof.batch_number, proof.index, proof.merkle_proof],
         });
@@ -60,7 +65,7 @@ export const useClaimWithdraw = () => {
         });
       }
     },
-    [client],
+    [client, commonPropsL1],
   );
   return { claimWithdraw: !client ? undefined : claimWithdraw };
 };

@@ -145,7 +145,7 @@ The `.env` file must contain the following environment variables (make sure to r
 VITE_L1_NAME="Ethrex L1 Local"
 VITE_L1_RPC_URL=http://host.docker.internal:8545
 VITE_L1_CHAIN_ID=9
-VITE_L1_BRIDGE_ADDRESS=0xebc31Eff9D9f5F63F65A68734816b7De1256845B
+VITE_HEALTH_ENDPOINT=http://host.docker.internal:5555
 VITE_L2_NAME="Ethrex L2 Local"
 VITE_L2_RPC_URL=http://host.docker.internal:1729
 VITE_L2_CHAIN_ID=65536999
@@ -155,6 +155,14 @@ VITE_DELEGATION_CONTRACT_ADDRESS=0x00e29d532f1c62a923ee51ee439bfc1500b1ce4d
 VITE_TEST_TOKEN_CONTRACT_ADDRESS=0x4b8a3d616d9146d9ec66a33b76d63612eabede02
 
 ```
+
+**Environment Variable Notes:**
+
+- **`VITE_HEALTH_ENDPOINT`**: URL to the ethrex node's health endpoint
+
+  - **Local development**: Can be omitted (defaults to `http://localhost:5555`) or set explicitly
+  - **Docker**: Use `http://host.docker.internal:5555` to access the host's ethrex node from within the container
+  - The Vite dev server proxies requests to avoid CORS issues
 
 ## Features
 
